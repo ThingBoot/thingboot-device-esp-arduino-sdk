@@ -1,0 +1,25 @@
+{
+  "name": "thingboot-device-sdk",
+  "version": "1.0.1",
+  "author": "ThingBoot",
+  "maintainer": "support@thingboot.com",
+  "sentence": "ThingBoot Device SDK - connect ESP devices quickly to ThingBoot IoT platform",
+  "paragraph": "Provides networking, platform connectivity, local LAN services and driver hooks for rapid product firmware development.",
+  "platforms": ["espressif8266", "espressif32"],
+  "frameworks": ["arduino"],
+  "keywords": ["thingboot", "iot", "esp32", "esp8266", "mesh", "http"],
+  "license": "Proprietary",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThingBoot/thingboot-device-sdk.git"
+  },
+  "build": {
+    "includeDir": "include",
+    "libArchive": false,
+    "srcFilter": ["-<*>"],
+    "extraScript": "extra_script.py"
+  },
+  "dependencies": {
+    "Arduino_JSON": "^0.2.0"
+  }
+}
