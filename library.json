@@ -20,6 +20,8 @@
     "extraScript": "extra_script.py"
   },
   "dependencies": {
-    "Arduino_JSON": "^0.2.0"
+    "Arduino_JSON": "^0.2.0",
+    "ArduinoHttpClient": "^0.6.1",
+    "PubSubClient": "^2.8.0"
   }
 }
