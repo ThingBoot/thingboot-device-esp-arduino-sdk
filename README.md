@@ -176,14 +176,14 @@ lib/thingboot-device-sdk/
 
 - **SDK 本身免费**：开发者可免费下载、编译、开发，不限制开发人数和编译次数。
 - **按设备接入计费**：设备通过本 SDK 连接芯步云平台时，按接入设备数量收取平台服务费。
-- **激活方式**：设备在 [芯步控制台](https://console.thingboot.com) 注册激活。
+- **设备接入方式**：设备在 [芯步控制台](https://console.thingboot.com) 注册并接入。
 - **购买与咨询**：联系 `license@thingboot.com` 或通过芯步控制台购买。
 
 ## 技术支持
 
 - 技术支持：`support@thingboot.com`
 - 销售授权：`license@thingboot.com`
-- 官方文档：[docs.thingboot.com](https://docs.thingboot.com)
+- 官方文档：[docs.thingboot.com](https://www.thingboot.com/document/fb9d5f99e09c8673/)
 
 ---
 
