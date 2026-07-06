@@ -53,7 +53,7 @@ framework = arduino
 ; build_flags = -DTBD_DEBUG          ; 启用 SDK 调试日志输出
 ; build_flags = -DTBD_ETHER -DTBD_GSM -DTBD_DEBUG
 
-lib_deps = https://github.com/ThingBoot/thingboot-device-sdk.git#v1.0.1
+lib_deps = https://github.com/ThingBoot/thingboot-device-sdk.git
 ```
 
 #### 2. 包含头文件
