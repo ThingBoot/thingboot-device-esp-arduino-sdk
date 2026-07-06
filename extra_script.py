@@ -62,8 +62,13 @@ elif platform == "espressif32":
     lib_name = make_lib_name(base, has_ether, has_gsm, has_debug)
 
 if lib_name:
-    # 接受多种可能的库目录命名
+    # 优先使用 extra_script.py 自身所在目录定位 lib/。
+    # 这样无论库是通过 lib_deps 安装到 .pio/libdeps/<env>/ 下，
+    # 还是手动放到 lib/ 下，都能找到 .a 文件。
+    sdk_dir = os.path.dirname(os.path.abspath(__file__))
     candidates = [
+        os.path.join(sdk_dir, "lib"),
+        # 兼容旧的手动放置路径
         os.path.join(PROJECT_DIR, "lib", "thingboot-device-sdk", "lib"),
         os.path.join(PROJECT_DIR, "lib", "ThingBootSDK", "lib"),
         os.path.join(PROJECT_DIR, "lib", "thingboot-device-sdk-main", "lib"),
