@@ -53,7 +53,7 @@ framework = arduino
 ; build_flags = -DTBD_DEBUG          ; Enable SDK debug log output
 ; build_flags = -DTBD_ETHER -DTBD_GSM -DTBD_DEBUG
 
-lib_deps = https://github.com/ThingBoot/thingboot-device-sdk.git
+lib_deps = https://github.com/ThingBoot/thingboot-device-esp-arduino-sdk.git
 ```
 
 #### 2. Include Header
@@ -93,7 +93,7 @@ void loop() {
 
 ### Option 2: Arduino IDE
 
-1. Download `dist.zip` for the desired version from the [Releases page](https://github.com/ThingBoot/thingboot-device-sdk/releases).
+1. Download `dist.zip` for the desired version from the [Releases page](https://github.com/ThingBoot/thingboot-device-esp-arduino-sdk/releases).
 2. Extract to get `include/`, `lib/`, `examples/`, etc.
 3. In Arduino IDE select **Sketch → Include Library → Add .ZIP Library...**, or manually copy the folder to `Documents/Arduino/libraries/ThingBootSDK/`.
 4. Select the `.a` library for your target board:
@@ -110,7 +110,7 @@ maintainer=support@thingboot.com
 sentence=ThingBoot Device SDK
 paragraph=Precompiled closed-source SDK for connecting ESP devices to ThingBoot IoT platform.
 category=Communication
-url=https://github.com/ThingBoot/thingboot-device-sdk
+url=https://github.com/ThingBoot/thingboot-device-esp-arduino-sdk
 architectures=esp8266,esp32
 precompiled=true
 ```
@@ -122,7 +122,7 @@ precompiled=true
 ## Directory Structure
 
 ```plain
-lib/thingboot-device-sdk/
+lib/thingboot-device-esp-arduino-sdk/
 ├── include/
 │   └── ThingBootSDK.h            # Public API header
 │   └── ThingBootSDK/             # Public headers grouped by module

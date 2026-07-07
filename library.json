@@ -1,5 +1,5 @@
 {
-  "name": "thingboot-device-sdk",
+  "name": "thingboot-device-esp-arduino-sdk",
   "version": "1.0.1",
   "author": "ThingBoot",
   "maintainer": "support@thingboot.com",
@@ -11,7 +11,7 @@
   "license": "Proprietary",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ThingBoot/thingboot-device-sdk.git"
+    "url": "https://github.com/ThingBoot/thingboot-device-esp-arduino-sdk.git"
   },
   "build": {
     "includeDir": "include",

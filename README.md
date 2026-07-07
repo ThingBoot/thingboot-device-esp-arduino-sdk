@@ -53,7 +53,7 @@ framework = arduino
 ; build_flags = -DTBD_DEBUG          ; 启用 SDK 调试日志输出
 ; build_flags = -DTBD_ETHER -DTBD_GSM -DTBD_DEBUG
 
-lib_deps = https://github.com/ThingBoot/thingboot-device-sdk.git
+lib_deps = https://github.com/ThingBoot/thingboot-device-esp-arduino-sdk.git
 ```
 
 #### 2. 包含头文件
@@ -93,7 +93,7 @@ void loop() {
 
 ### 方式二：Arduino IDE
 
-1. 从 [Release 页面](https://github.com/ThingBoot/thingboot-device-sdk/releases) 下载对应版本的 `dist.zip`。
+1. 从 [Release 页面](https://github.com/ThingBoot/thingboot-device-esp-arduino-sdk/releases) 下载对应版本的 `dist.zip`。
 2. 解压后得到 `include/`、`lib/`、`examples/` 等目录。
 3. 在 Arduino IDE 中选择 **项目 → 加载库 → 添加 .ZIP 库...**，或手动将文件夹复制到 `文档/Arduino/libraries/ThingBootSDK/`。
 4. 根据目标板选择对应架构的 `.a` 文件：
@@ -110,7 +110,7 @@ maintainer=support@thingboot.com
 sentence=ThingBoot Device SDK
 paragraph=Precompiled closed-source SDK for connecting ESP devices to ThingBoot IoT platform.
 category=Communication
-url=https://github.com/ThingBoot/thingboot-device-sdk
+url=https://github.com/ThingBoot/thingboot-device-esp-arduino-sdk
 architectures=esp8266,esp32
 precompiled=true
 ```
@@ -122,7 +122,7 @@ precompiled=true
 ## 目录结构
 
 ```plain
-lib/thingboot-device-sdk/
+lib/thingboot-device-esp-arduino-sdk/
 ├── include/
 │   └── ThingBootSDK.h            # 公共 API 头文件
 │   └── ThingBootSDK/             # 按模块拆分的公共头文件

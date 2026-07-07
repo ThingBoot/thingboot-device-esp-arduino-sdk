@@ -32,9 +32,7 @@ ThingBoot Device SDK （以下简称“本 SDK”）在编译和运行过程中�
 | Ethernet3 | https://github.com/sstaub/Ethernet3 | LGPL-2.1 | 条件性（仅以太网变体） |
 | TinyGSM | https://github.com/vshymanskyy/TinyGSM | LGPL-3.0 | 条件性（仅 GSM 变体） |
 | EspSoftwareSerial | https://github.com/plerup/espsoftwareserial | LGPL-2.1+ | 条件性（仅 GSM 变体） |
-| ghostl | https://github.com/bigtreetech/ghostl | 待确认 | 条件性（仅特定变体） |
-
-> **注意**：`ghostl` 的许可证请以其实际仓库声明为准，发布前建议核实。
+| ghostl | https://github.com/bigtreetech/ghostl | LGPL-2.1+ | 条件性（仅特定变体） |
 
 > **“条件性”** 表示：只有构建启用了对应功能（如 `-DTBD_ETHER`、`-DTBD_GSM`）的变体时，这些库的对象文件才会被打包进 `.a`。
 
