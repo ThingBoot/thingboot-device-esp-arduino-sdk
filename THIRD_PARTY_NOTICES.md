@@ -29,10 +29,6 @@ ThingBoot Device SDK （以下简称“本 SDK”）在编译和运行过程中�
 | Arduino_JSON | https://github.com/arduino-libraries/Arduino_JSON | LGPL-2.1 | 是 |
 | ArduinoHttpClient | https://github.com/arduino-libraries/ArduinoHttpClient | Apache-2.0 | 是 |
 | PubSubClient | https://github.com/knolleary/pubsubclient | MIT | 是 |
-| Ethernet3 | https://github.com/sstaub/Ethernet3 | LGPL-2.1 | 条件性（仅以太网变体） |
-| TinyGSM | https://github.com/vshymanskyy/TinyGSM | LGPL-3.0 | 条件性（仅 GSM 变体） |
-| EspSoftwareSerial | https://github.com/plerup/espsoftwareserial | LGPL-2.1+ | 条件性（仅 GSM 变体） |
-| ghostl | https://github.com/bigtreetech/ghostl | LGPL-2.1+ | 条件性（仅特定变体） |
 
 > **“条件性”** 表示：只有构建启用了对应功能（如 `-DTBD_ETHER`、`-DTBD_GSM`）的变体时，这些库的对象文件才会被打包进 `.a`。
 
@@ -65,11 +61,3 @@ ThingBoot Device SDK （以下简称“本 SDK”）在编译和运行过程中�
 - Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
 - MIT: https://opensource.org/licenses/MIT
 - GPL-3.0: https://www.gnu.org/licenses/gpl-3.0.html
-
----
-
-## 5. 更新记录
-
-| 日期 | 版本 | 说明 |
-|---|---|---|
-| 2026-07-06 | 1.0.1 | 初始整理第三方依赖及 LGPL 重新链接说明 |

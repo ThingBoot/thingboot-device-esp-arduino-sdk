@@ -10,6 +10,14 @@ private:
 public:
     ThingBootPeripheral(ThingBootDevice* device = nullptr) : _device(device) {}
 
+    // 外设预初始化回调
+    // Peripheral pre-initialization callback
+    uint16_t onInitPre(std::function<void()> callback);
+
+    // 外设初始化回调
+    // Peripheral initialization callback
+    uint16_t onInit(std::function<void()> callback);
+
     // 配置设备按钮
     // callback 中 keep 为按下持续时长，单位毫秒
     // Configure device button
@@ -28,14 +36,6 @@ public:
     // 设定系统 LED
     // Set system LED
     uint16_t setSystemLed(uint8_t num);
-
-    // 外设预初始化回调
-    // Peripheral pre-initialization callback
-    uint16_t setupPre(std::function<void()> callback);
-
-    // 外设初始化回调
-    // Peripheral initialization callback
-    uint16_t setup(std::function<void()> callback);
 
     // 点亮 LED
     // Turn LED on

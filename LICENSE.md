@@ -60,7 +60,7 @@ This Agreement shall be governed by the laws of the People's Republic of China.
 
 This SDK is built for the ESP8266 / ESP32 Arduino platforms and uses third-party open-source libraries. The proprietary license terms above apply **only to ThingBoot's own SDK code** (the precompiled static libraries, headers, examples, and scripts created by ThingBoot).
 
-Third-party components — including but not limited to the ESP8266 Arduino Core, arduino-esp32, Arduino_JSON, ArduinoHttpClient, PubSubClient, Ethernet3, TinyGSM, and EspSoftwareSerial — are governed by their own open-source licenses (LGPL, Apache-2.0, MIT, GPL-3.0, etc.). These licenses are independent of the commercial terms above.
+Third-party components — including but not limited to the ESP8266 Arduino Core, arduino-esp32, Arduino_JSON, ArduinoHttpClient, and PubSubClient — are governed by their own open-source licenses (LGPL, Apache-2.0, MIT, GPL-3.0, etc.). These licenses are independent of the commercial terms above.
 
 **A complete list of third-party dependencies, their licenses, and LGPL relinking information is provided in `THIRD_PARTY_NOTICES.md`.** Licensee is responsible for ensuring compliance with all applicable third-party licenses in the final firmware.
 

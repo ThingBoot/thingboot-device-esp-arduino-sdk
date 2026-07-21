@@ -57,6 +57,15 @@ public:
     // 断开 GSM
     // Disconnect GSM
     void disconnectGSM();
+
+    // 设置 GSM 串口，支持软串口或硬串口
+    // 开发者需先对串口执行 begin()，例如：
+    //   Serial1.begin(115200);
+    //   device.Network.setGSMSerialPort(&Serial1, 115200);
+    // baud 为 0 时自动检测；大于 0 时使用固定波特率。
+    // Set the GSM serial port (SoftwareSerial or HardwareSerial).
+    // The caller must call begin() on the serial port before using GSM.
+    void setGSMSerialPort(Stream* serial, uint32_t baud = 0);
 #endif
 };
 

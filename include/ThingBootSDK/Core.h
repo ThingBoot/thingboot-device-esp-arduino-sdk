@@ -81,23 +81,23 @@ uint16_t setProduct(const char* key, const char* secret,
 
 // 系统状态变化回调
 // System state change callback
-uint16_t setSystemStateChangeCallback(
+uint16_t onSystemStateChange(
     std::function<void(SYS_STATE current, SYS_STATE previous)> callback);
 
 // 系统初始化进度变化回调
 // System initialization progress change callback
-uint16_t setSystemProgressChangeCallback(
+uint16_t onSystemProgress(
     std::function<void(const char* desc, float progress)> callback);
 
 // 设置调试日志回调
 // Set debug log callback
-uint16_t setDebugCallback(
+uint16_t onDebug(
     std::function<void(const char* category, const char* message)> callback);
 
-// 初始化设备
-// Initialize device
+// 系统初始化
+// Initialize system
 void setup();
 
-// 主循环，需在 loop() 中调用
-// Main loop, call in loop()
+// 系统主循环，需在 Arduino 的 loop() 中调用
+// System main loop, call in Arduino loop()
 void loop();

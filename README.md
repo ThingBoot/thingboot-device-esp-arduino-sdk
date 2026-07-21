@@ -76,7 +76,7 @@ void setup() {
                       "your-board", "your-mcu", "your-firmware-version");
 
     // 注册平台命令回调
-    device.Order.setOrderCallback([](const char* name, JSONVar data) {
+    device.Order.onOrder([](const char* name, JSONVar data) {
         Serial.print("收到命令: ");
         Serial.println(name);
         device.Order.replyMessage("{\"result\":\"ok\"}");
@@ -153,7 +153,7 @@ lib/thingboot-device-esp-arduino-sdk/
 | 宏 | 说明 | 生成的库名后缀 |
 |---|---|---|
 | `TBD_ETHER` | 启用以太网（W5500）支持 | `_ether` |
-| `TBD_GSM` | 启用 4G Cat.1（TinyGSM）支持 | `_gsm` |
+| `TBD_GSM` | 启用 4G Cat.1（ML307）支持 | `_gsm` |
 | `TBD_DEBUG` | 启用 SDK 内部调试日志输出 | `_debug` |
 
 多个开关可组合使用，例如 `-DTBD_ETHER -DTBD_GSM -DTBD_DEBUG` 对应 `libthingboot_device_esp8266_ether_gsm_debug.a`。
@@ -167,8 +167,6 @@ lib/thingboot-device-esp-arduino-sdk/
 | ArduinoHttpClient | https://github.com/arduino-libraries/ArduinoHttpClient | Apache-2.0 |
 | Arduino_JSON (ArduinoJson) | https://github.com/bblanchon/ArduinoJson | MIT |
 | PubSubClient | https://github.com/knolleary/pubsubclient | MIT |
-| Ethernet3 | https://github.com/sstaub/Ethernet3 | LGPL-2.1 |
-| TinyGSM | https://github.com/vshymanskyy/TinyGSM | LGPL-3.0 |
 
 用户需确保最终固件符合所使用开源组件的许可证要求。芯步不对第三方开源组件的许可证合规性承担责任。
 

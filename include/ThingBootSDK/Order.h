@@ -12,7 +12,7 @@ public:
 
     // 设置命令回调
     // Set order callback
-    uint16_t setOrderCallback(std::function<void(const char*, JSONVar)> order_callback);
+    uint16_t onOrder(std::function<void(const char*, JSONVar)> order_callback);
 
     // 命令应答
     // Reply to order

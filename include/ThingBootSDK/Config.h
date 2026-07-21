@@ -38,7 +38,7 @@ public:
 
     // 配置变化回调
     // Configuration change callback
-    uint16_t setConfigCallback(std::function<void(const char*, String)> config_callback);
+    uint16_t onConfig(std::function<void(const char*, String)> config_callback);
 };
 
 #endif

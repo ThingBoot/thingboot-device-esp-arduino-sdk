@@ -76,7 +76,7 @@ void setup() {
                       "your-board", "your-mcu", "your-firmware-version");
 
     // Register platform command callback
-    device.Order.setOrderCallback([](const char* name, JSONVar data) {
+    device.Order.onOrder([](const char* name, JSONVar data) {
         Serial.print("Received order: ");
         Serial.println(name);
         device.Order.replyMessage("{\"result\":\"ok\"}");
@@ -153,7 +153,7 @@ lib/thingboot-device-esp-arduino-sdk/
 | Macro | Description | Library filename suffix |
 |---|---|---|
 | `TBD_ETHER` | Enable Ethernet (W5500) support | `_ether` |
-| `TBD_GSM` | Enable 4G Cat.1 (TinyGSM) support | `_gsm` |
+| `TBD_GSM` | Enable 4G Cat.1 (ML307) support | `_gsm` |
 | `TBD_DEBUG` | Enable SDK internal debug log output | `_debug` |
 
 Multiple switches can be combined, e.g. `-DTBD_ETHER -DTBD_GSM -DTBD_DEBUG` selects `libthingboot_device_esp8266_ether_gsm_debug.a`.
@@ -167,8 +167,6 @@ This SDK is built upon the following open-source projects (in addition to the Ar
 | ArduinoHttpClient | https://github.com/arduino-libraries/ArduinoHttpClient | Apache-2.0 |
 | Arduino_JSON (ArduinoJson) | https://github.com/bblanchon/ArduinoJson | MIT |
 | PubSubClient | https://github.com/knolleary/pubsubclient | MIT |
-| Ethernet3 | https://github.com/sstaub/Ethernet3 | LGPL-2.1 |
-| TinyGSM | https://github.com/vshymanskyy/TinyGSM | LGPL-3.0 |
 
 You are responsible for ensuring that your final firmware complies with the applicable open-source license requirements. ThingBoot assumes no liability for third-party open-source license compliance.
 

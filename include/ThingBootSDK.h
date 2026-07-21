@@ -9,7 +9,6 @@ class ThingBootDeviceImpl;
 
 // 先完整定义各子模块类，以便作为 ThingBootDevice 的成员对象
 #include "ThingBootSDK/Config.h"
-#include "ThingBootSDK/Setup.h"
 #include "ThingBootSDK/Order.h"
 #include "ThingBootSDK/Event.h"
 #include "ThingBootSDK/Message.h"
@@ -24,7 +23,6 @@ class ThingBootDeviceImpl;
 class ThingBootDevice {
     // 允许子模块访问 _impl
     friend class ThingBootConfig;
-    friend class ThingBootSetup;
     friend class ThingBootOrder;
     friend class ThingBootEvent;
     friend class ThingBootMessage;
@@ -44,7 +42,6 @@ public:
 
     // 子模块对象（按功能分组，降低 API 密集感）
     ThingBootConfig Config;
-    ThingBootSetup Setup;
     ThingBootOrder Order;
     ThingBootEvent Event;
     ThingBootMessage Message;

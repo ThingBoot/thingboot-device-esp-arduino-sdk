@@ -22,7 +22,7 @@
 #include <ESP8266WiFiMulti.h>
 #endif
 #ifdef TBD_ETHER
-#include <Ethernet3.h>
+#include <Ethernet.h>
 #endif
 #include <ArduinoHttpClient.h>
 #include <PubSubClient.h>

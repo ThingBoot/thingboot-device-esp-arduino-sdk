@@ -35,7 +35,7 @@ void setup()
 	Serial.begin(115200);
 	
 	//调试信息打印
-	device.setDebugCallback(onDebug);
+	device.onDebug(onDebug);
 	
 	//产品信息，请到芯步产品中心定义和查看
 	device.setProduct(
@@ -51,10 +51,10 @@ void setup()
 	device.Config.addConfig("btn_action", 1, 3);
 
 	//设置命令回调函数
-	device.Order.setOrderCallback(onOrder);
+	device.Order.onOrder(onOrder);
 
 	//外设初始化
-	device.Peripheral.setup([]() {
+	device.Peripheral.onInit([]() {
 		relay_setup();
 	});
 
