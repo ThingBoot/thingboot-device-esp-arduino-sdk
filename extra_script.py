@@ -63,11 +63,21 @@ elif platform == "espressif32":
     lib_name = make_lib_name(base, has_ether, has_gsm, has_debug)
 
 def find_sdk_lib_dir(project_dir):
-    """搜索 SDK 的 lib/ 目录所在位置。
+    """定位 SDK 的 lib/ 目录。
 
-    PlatformIO 通过 lib_deps 安装时通常在 .pio/libdeps/<env>/thingboot-device-esp-arduino-sdk/lib/，
-    手动放置时可能在 lib/thingboot-device-esp-arduino-sdk/lib/。同时保留旧名称兼容。
+    优先通过 extra_script.py 自身所在目录（SDK 根目录）查找 lib/ 或 dist/lib/；
+    若失败，再回退到项目目录下搜索常见的 PlatformIO 安装路径。
     """
+    sdk_root = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        os.path.join(sdk_root, "lib"),
+        os.path.join(sdk_root, "dist", "lib"),
+    ]
+    for path in candidates:
+        if os.path.isdir(path):
+            return path
+
+    # Fallback：在 project_dir 下搜索（兼容旧布局/手动放置）
     patterns = [
         os.path.join(project_dir, ".pio", "libdeps", "*", "thingboot-device-esp-arduino-sdk", "lib"),
         os.path.join(project_dir, ".pio", "libdeps", "*", "thingboot-device-esp-arduino-sdk", "dist", "lib"),
