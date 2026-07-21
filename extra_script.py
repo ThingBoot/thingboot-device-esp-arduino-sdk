@@ -70,13 +70,17 @@ def find_sdk_lib_dir(project_dir):
     """
     patterns = [
         os.path.join(project_dir, ".pio", "libdeps", "*", "thingboot-device-esp-arduino-sdk", "lib"),
-        os.path.join(project_dir, ".pio", "libdeps", "*", "thingboot-device-esp-arduino-sdk", "lib"),
+        os.path.join(project_dir, ".pio", "libdeps", "*", "thingboot-device-esp-arduino-sdk", "dist", "lib"),
         os.path.join(project_dir, ".pio", "libdeps", "*", "ThingBootSDK", "lib"),
+        os.path.join(project_dir, ".pio", "libdeps", "*", "ThingBootSDK", "dist", "lib"),
         os.path.join(project_dir, ".pio", "libdeps", "*", "thingboot-device-esp-arduino-sdk-main", "lib"),
+        os.path.join(project_dir, ".pio", "libdeps", "*", "thingboot-device-esp-arduino-sdk-main", "dist", "lib"),
         os.path.join(project_dir, "lib", "thingboot-device-esp-arduino-sdk", "lib"),
-        os.path.join(project_dir, "lib", "thingboot-device-esp-arduino-sdk", "lib"),
+        os.path.join(project_dir, "lib", "thingboot-device-esp-arduino-sdk", "dist", "lib"),
         os.path.join(project_dir, "lib", "ThingBootSDK", "lib"),
+        os.path.join(project_dir, "lib", "ThingBootSDK", "dist", "lib"),
         os.path.join(project_dir, "lib", "thingboot-device-esp-arduino-sdk-main", "lib"),
+        os.path.join(project_dir, "lib", "thingboot-device-esp-arduino-sdk-main", "dist", "lib"),
     ]
     for pattern in patterns:
         for path in glob.glob(pattern):
