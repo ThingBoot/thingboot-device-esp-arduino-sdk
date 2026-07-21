@@ -68,7 +68,7 @@ def find_sdk_lib_dir(project_dir):
     优先通过 extra_script.py 自身所在目录（SDK 根目录）查找 lib/ 或 dist/lib/；
     若失败，再回退到项目目录下搜索常见的 PlatformIO 安装路径。
     """
-    sdk_root = os.path.dirname(os.path.abspath(__file__))
+    sdk_root = str(Dir('.').srcnode().abspath)
     candidates = [
         os.path.join(sdk_root, "lib"),
         os.path.join(sdk_root, "dist", "lib"),
