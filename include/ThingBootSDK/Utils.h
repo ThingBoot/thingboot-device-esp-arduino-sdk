@@ -136,16 +136,14 @@ inline String str_find(String str, String begin, String end)
 // Check whether string ends with the specified suffix
 inline bool str_ends_with(const char* str, const char* suffix)
 {
-    if (str == NULL) return false;
+    if (str == NULL || suffix == NULL) return false;
 
+    size_t str_len = strlen(str);
     size_t suffix_len = strlen(suffix);
 
-    const char* p = str;
-    while (*p != '\0') p++;
+    if (str_len < suffix_len) return false;
 
-    if (p - str < suffix_len) return false;
-
-    p -= suffix_len;
+    const char* p = str + str_len - suffix_len;
     while (*suffix != '\0')
     {
         if (*p != *suffix) return false;

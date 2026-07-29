@@ -3,15 +3,17 @@
 </p>
 
 <h1 align="center">ThingBoot Device SDK</h1>
-<p align="center">Precompiled Embedded IoT Development Library</p>
+<p align="center"><b>Enterprise-grade free SDK for developers — works out of the box, zero learning curve</b></p>
 
 ---
 
 > **License & Billing Notice**
 >
-> - This SDK itself is **provided free of charge** to developers, distributed as precompiled closed-source libraries (`.a` + headers).
-> - There is **no SDK license fee**, no limit on the number of developers, and no limit on build count.
-> - When a device connects to the **ThingBoot cloud platform** through this SDK, a per-device platform access service fee applies.
+> - This SDK is **free** for developers, distributed as precompiled closed-source libraries (`.a` + headers), with no per-developer or per-build limits.
+> - Each developer account gets **100 free device connections per year** — enough to cover a dev team's annual prototyping volume. Devices simply register on the ThingBoot Console.
+> - Managing and controlling devices via the Open Platform API is metered and billed (mainly used by end customers; developers typically don't need it).
+> - Fees apply only when a product enters **mass production**: the factory pays the platform access fee, plus optional Open Platform API usage fees.
+> - With this policy, we hope to encourage developers to build and retrofit hardware products on the ThingBoot standard.
 > - Unauthorized redistribution, reverse engineering, decompilation, or development of competing products/platforms based on this SDK is prohibited.
 
 ---
@@ -172,10 +174,10 @@ You are responsible for ensuring that your final firmware complies with the appl
 
 ## Licensing & Billing
 
-- **SDK is free**: Developers can download, compile, and develop without paying SDK license fees.
-- **Per-device platform access fee**: When a device connects to the ThingBoot cloud platform through this SDK, the platform access service is billed per connected device.
-- **Activation**: Devices are activated on the [ThingBoot Console](https://console.thingboot.com).
-- **Purchase & inquiries**: Contact `license@thingboot.com` or purchase via the ThingBoot Console.
+- **Free SDK**: free to download, compile and develop with; no per-developer or per-build limits.
+- **100 free devices per year**: each developer account can connect 100 devices per year at no charge (covers prototyping volume); register devices on the [ThingBoot Console](https://console.thingboot.com).
+- **Production-stage billing**: once a product enters mass production, the factory pays the platform access fee; Open Platform API usage (optional, mainly for end customers) is metered separately.
+- **Purchase & inquiries**: contact `license@thingboot.com` or purchase via the ThingBoot Console.
 
 ## Support
 

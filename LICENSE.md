@@ -24,10 +24,13 @@ The SDK itself is **free of charge**. There is no per-developer fee, no per-buil
 
 ## 3. Platform Access Fee
 
-When a device that includes the SDK connects to the **ThingBoot cloud platform**, a per-device Platform Access Service fee applies. This fee is separate from the SDK license and is billed according to the purchase agreement or platform subscription tier selected by Licensee.
+The SDK itself is **free of charge**. Platform access is billed as follows:
 
-- Each Licensed Device must be registered and activated on the ThingBoot platform.
-- Unlicensed or unpaid devices may be refused connection or remotely disabled by the platform.
+- **Free quota**: each developer account receives **100 free device connections per year**, intended to cover the prototyping volume of a development team. Devices must be registered and activated on the ThingBoot platform.
+- **Open Platform API**: managing and controlling devices via the ThingBoot Open Platform API is metered and billed separately. This part mainly serves end customers; developers typically do not need it.
+- **Production stage**: when a product enters mass production, the factory (manufacturer) is charged a platform access fee per connected device, plus optional Open Platform API usage fees.
+
+- Devices beyond the free quota or without a valid factory subscription may be refused connection or remotely disabled by the platform.
 - Devices used in purely offline / LAN-only mode are not subject to the cloud Platform Access Service fee.
 
 ## 4. Restrictions
