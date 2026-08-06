@@ -79,6 +79,10 @@ String getTimeString(const char* format = "%Y-%m-%d %H:%M:%S");
 uint16_t setProduct(const char* key, const char* secret,
     const char* board, const char* mcu, const char* firmware);
 
+// 设置设备激活码（用于未预烧录设备时的平台激活）
+// Set device activation code for platform activation when not pre-burned
+uint16_t setActiveCode(const char* code);
+
 // 系统状态变化回调
 // System state change callback
 uint16_t onSystemStateChange(
