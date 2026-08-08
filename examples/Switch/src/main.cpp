@@ -6,7 +6,7 @@ ThingBootDevice device;
 #include "relay.h"
 
 //调试信息打印回调
-void onDebug(const char* category, const char* message)
+void debug(const char* category, const char* message)
 {
     Serial.print("[");
     Serial.print(millis());
@@ -17,7 +17,7 @@ void onDebug(const char* category, const char* message)
 }
 
 //命令回调
-void onOrder(const char* mid, JSONVar data)
+void order(const char* mid, JSONVar data)
 {
 	JSONVar ret;
 
@@ -35,23 +35,29 @@ void setup()
 	Serial.begin(115200);
 	
 	//调试信息打印
-	device.onDebug(onDebug);
+	device.onDebug(debug);
 	
 	//产品信息，请到芯步产品中心定义和查看
 	device.setProduct(
-		"wthkoqaFpw", //产品代号[Key]
-		"19db80bfb2c5f300909f45658691dc0a", //产品密码[Secret]
+		"xxx", //产品代号[Key]
+		"xxxx", //产品密码[Secret]
 		"demo", //适配PCB板，自由定义
 		"esp8266",  //适配MCU
-		"p199.20260705.v1.xxx"  //当前固件版本号，先在控制台登记新版本，末段xxx为子版本号（自由定义）
+		"xxx.xxxxx.xx.xxx"  //当前固件版本号，先在控制台登记新版本，末段xxx为子版本号（自由定义）
 	);
+
+	//在开发阶段，请打开下面的链接免费获取设备接入激活码
+	//在量产阶段，烧录工具软件将自动写入激活码。所以量产后可注释下方代码（或者不理会）
+	//please open the link to generate a active code for this device
+	//https://www.thingboot.com/developer/center/access/?id=
+	device.setActiveCode("xxxxxxxxxxxxx");
 
 	//设备配置
 	device.Config.addConfig("relay", 0, 1);
 	device.Config.addConfig("btn_action", 1, 3);
 
 	//设置命令回调函数
-	device.Order.onOrder(onOrder);
+	device.Order.onOrder(order);
 
 	//外设初始化
 	device.Peripheral.onInit([]() {
