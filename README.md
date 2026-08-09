@@ -33,8 +33,25 @@
 |------|------|------|
 | ESP8266 | ESP8266EX | ✅ |
 | ESP32 | ESP32-WROOM / WROVER | ✅ |
+| ESP32-S2 | ESP32-S2 | ✅ |
 | ESP32-S3 | ESP32-S3-WROOM | ✅ |
+| ESP32-C3 | ESP32-C3 | ✅ |
 | ESP32-C6 | ESP32-C6 | ✅ |
+| ESP32-C2 / C61 | - | ❌ 需 ESP-IDF 组件方式 |
+
+## 构建环境
+
+### ESP8266
+- 框架：[Arduino-ESP8266](https://github.com/esp8266/Arduino)
+- PlatformIO 平台：`espressif8266`
+- Framework 版本：`3.30102.0`（Arduino-ESP8266 3.1.2）
+
+### ESP32
+- 框架：[Arduino-ESP32](https://github.com/espressif/arduino-esp32)
+- PlatformIO 平台：`espressif32`
+- Framework 版本：`3.3.2`
+
+> ESP32-C2 和 ESP32-C61 需通过 ESP-IDF 组件方式使用，不在 Arduino SDK 支持范围内。
 
 ## 快速开始
 

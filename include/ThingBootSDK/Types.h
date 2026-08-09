@@ -15,7 +15,11 @@
 #ifdef ESP32
 #include <WiFi.h>
 #include <WiFiMulti.h>
+#if defined(ESP_ARDUINO_VERSION_MAJOR) && ESP_ARDUINO_VERSION_MAJOR >= 3
+#include <NetworkClientSecure.h>
+#else
 #include <WiFiClientSecure.h>
+#endif
 #include <esp_wifi.h>
 #else
 #include <ESP8266WiFi.h>

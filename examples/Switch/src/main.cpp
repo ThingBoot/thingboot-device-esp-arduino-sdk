@@ -49,7 +49,7 @@ void setup()
 	//在开发阶段，请打开下面的链接免费获取设备接入激活码
 	//在量产阶段，烧录工具软件将自动写入激活码。所以量产后可注释下方代码（或者不理会）
 	//please open the link to generate a active code for this device
-	//https://www.thingboot.com/developer/center/access/?id=
+	//https://www.thingboot.com/developer/center/access/
 	device.setActiveCode("xxxxxxxxxxxxx");
 
 	//设备配置

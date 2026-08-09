@@ -56,11 +56,19 @@ elif platform == "espressif32":
     arch_l = arch.lower()
     if "s3" in arch_l:
         base = "esp32s3"
+    elif "s2" in arch_l:
+        base = "esp32s2"
     elif "c6" in arch_l:
         base = "esp32c6"
+    elif "c3" in arch_l:
+        base = "esp32c3"
+    elif "c2" in arch_l or "c61" in arch_l:
+        print(f"[thingboot_device] WARNING: ESP32-C2/C61 需要 ESP-IDF 组件方式，不在 Arduino SDK 支持范围内")
+        lib_name = None
     else:
         base = "esp32"
-    lib_name = make_lib_name(base, has_ether, has_gsm, has_debug)
+    if lib_name is not None:
+        lib_name = make_lib_name(base, has_ether, has_gsm, has_debug)
 
 def find_sdk_lib_dir(project_dir):
     """定位 SDK 的 lib/ 目录。

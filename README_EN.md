@@ -32,8 +32,25 @@
 |----------|-----|--------|
 | ESP8266 | ESP8266EX | ✅ |
 | ESP32 | ESP32-WROOM / WROVER | ✅ |
+| ESP32-S2 | ESP32-S2 | ✅ |
 | ESP32-S3 | ESP32-S3-WROOM | ✅ |
+| ESP32-C3 | ESP32-C3 | ✅ |
 | ESP32-C6 | ESP32-C6 | ✅ |
+| ESP32-C2 / C61 | - | ❌ Requires ESP-IDF component mode |
+
+## Build Environment
+
+### ESP8266
+- Framework: [Arduino-ESP8266](https://github.com/esp8266/Arduino)
+- PlatformIO Platform: `espressif8266`
+- Framework Version: `3.30102.0` (Arduino-ESP8266 3.1.2)
+
+### ESP32
+- Framework: [Arduino-ESP32](https://github.com/espressif/arduino-esp32)
+- PlatformIO Platform: `espressif32`
+- Framework Version: `3.3.2`
+
+> ESP32-C2 and ESP32-C61 require ESP-IDF component mode and are not supported by the Arduino SDK.
 
 ## Quick Start
 
