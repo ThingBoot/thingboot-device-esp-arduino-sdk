@@ -25,9 +25,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #endif
-#ifdef TBD_ETHER
-#include <Ethernet.h>
-#endif
+// Ethernet.h 不再由公共头引入：以太网实现已迁入 addon（common/net_ether.h 自行包含）
 #include <ArduinoHttpClient.h>
 #include <PubSubClient.h>
 

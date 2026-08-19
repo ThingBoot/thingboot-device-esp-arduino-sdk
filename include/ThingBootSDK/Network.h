@@ -27,7 +27,8 @@ public:
     bool deleteWiFiConfig(uint8_t pos);
     String getWiFiConfig();
 
-#ifdef TBD_ETHER
+    // ---- 以太网（需链接 addon_net_ether 并调用 tb_addon_net_ether_install()；
+    // 未注册驱动时方法为空操作/返回空串/false）----
     // 设置以太网 SPI 片选引脚和复位引脚
     // Set Ethernet SPI CS and reset pins
     void setEthernetPin(uint8_t cs, int8_t rst = -1);
@@ -43,9 +44,9 @@ public:
     // 断开以太网
     // Disconnect Ethernet
     void disconnectEthernet();
-#endif
 
-#ifdef TBD_GSM
+    // ---- GSM/4G（需链接 addon_net_gsm 并调用 tb_addon_net_gsm_install()；
+    // 未注册驱动时方法为空操作/返回空串/false）----
     // 尝试连接 GSM
     // Try to connect GSM
     String tryConnectGSM();
@@ -66,7 +67,11 @@ public:
     // Set the GSM serial port (SoftwareSerial or HardwareSerial).
     // The caller must call begin() on the serial port before using GSM.
     void setGSMSerialPort(Stream* serial, uint32_t baud = 0);
-#endif
 };
+
+// ---- 联网 addon 安装函数（链接对应 addon 后，在 device.setup() 前调用）----
+// 返回 ERR_OK 成功；ERR_NETWORK_ABI_MISMATCH 表示 addon 与 base 版本不一致
+uint16_t tb_addon_net_ether_install();
+uint16_t tb_addon_net_gsm_install();
 
 #endif
