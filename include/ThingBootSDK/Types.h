@@ -37,7 +37,7 @@
 
 #include <Ticker.h>
 
-#define THINGBOOT_SDK_VERSION "1.0.1"
+#define THINGBOOT_SDK_VERSION "1.3.0"
 
 #include <ThingBootSDK/Enums.h>
 #include <ThingBootSDK/Errors.h>

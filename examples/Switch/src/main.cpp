@@ -52,6 +52,12 @@ void setup()
 	//https://www.thingboot.com/developer/center/access/
 	device.setActiveCode("xxxxxxxxxxxxx");
 
+	//联网 addon（v1.3 起）：本示例为 WiFi 联网，无需 install。
+	//如需以太网或 GSM，先在 platformio.ini 的 build_flags 打开 -DTBD_ETHER/-DTBD_GSM，
+	//然后在 device.setup() 前调用对应 install（二选一或都用）：
+	//tb_addon_net_ether_install();
+	//tb_addon_net_gsm_install();
+
 	//设备配置
 	device.Config.addConfig("relay", 0, 1);
 	device.Config.addConfig("btn_action", 1, 3);

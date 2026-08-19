@@ -7,7 +7,7 @@ PROJECT_DIR = env.subst("$PROJECT_DIR")
 platform = env.get("PIOPLATFORM")
 arch = env.get("BOARD_MCU", "")
 
-# 读取客户项目的 build_flags，判断需要哪种功能变体
+# 读取客户项目的 build_flags，判断需要链接哪些联网 addon
 build_flags = env.get("BUILD_FLAGS", [])
 if isinstance(build_flags, str):
     build_flags_str = build_flags
@@ -15,43 +15,18 @@ else:
     build_flags_str = " ".join(str(f) for f in build_flags)
 build_flags_lower = build_flags_str.lower()
 
-# 新开关命名：TBD_DEBUG / TBD_ETHER / TBD_GSM
+# v1.3 起：debug 恒带（运行期 onDebug 门控），不再有 _debug 变体库；
+# 联网功能拆为 addon 库（base 必链 + addon 按开关追加链接）
 has_debug = "-dtbd_debug" in build_flags_lower or "-d tbd_debug" in build_flags_lower
 has_ether = "-dtbd_ether" in build_flags_lower or "-d tbd_ether" in build_flags_lower
 has_gsm   = "-dtbd_gsm"   in build_flags_lower or "-d tbd_gsm"   in build_flags_lower
 
-def make_lib_name(base, has_ether, has_gsm, has_debug):
-    parts = [base]
-    if has_ether:
-        parts.append("ether")
-    if has_gsm:
-        parts.append("gsm")
-    if has_debug:
-        parts.append("debug")
-    return f"libthingboot_device_{'_'.join(parts)}.a"
+if has_debug:
+    print("[thingboot_device] NOTE: -DTBD_DEBUG 已废弃，日志恒带（device.onDebug 注册即输出），将链接 base 库")
 
-def fallback_names(lib_name):
-    """按优先级生成降级候选库名"""
-    candidates = []
-    # 1) 去掉 debug
-    if "_debug.a" in lib_name:
-        candidates.append(lib_name.replace("_debug.a", ".a"))
-    # 2) 去掉 gsm
-    if "_gsm" in lib_name:
-        candidates.append(lib_name.replace("_gsm", ""))
-    # 3) 去掉 ether
-    if "_ether" in lib_name:
-        candidates.append(lib_name.replace("_ether", ""))
-    # 4) 仅保留 base（去掉所有特性）
-    base_prefix = f"libthingboot_device_{base}"
-    candidates.append(base_prefix + ".a")
-    return candidates
-
-lib_name = None
-
+base = None
 if platform == "espressif8266":
     base = "esp8266"
-    lib_name = make_lib_name(base, has_ether, has_gsm, has_debug)
 elif platform == "espressif32":
     arch_l = arch.lower()
     if "s3" in arch_l:
@@ -64,11 +39,8 @@ elif platform == "espressif32":
         base = "esp32c3"
     elif "c2" in arch_l or "c61" in arch_l:
         print(f"[thingboot_device] WARNING: ESP32-C2/C61 需要 ESP-IDF 组件方式，不在 Arduino SDK 支持范围内")
-        lib_name = None
     else:
         base = "esp32"
-    if lib_name is not None:
-        lib_name = make_lib_name(base, has_ether, has_gsm, has_debug)
 
 def find_sdk_lib_dir(project_dir):
     """定位 SDK 的 lib/ 目录。
@@ -107,39 +79,35 @@ def find_sdk_lib_dir(project_dir):
     return None
 
 
-if lib_name:
+if base:
     lib_dir = find_sdk_lib_dir(PROJECT_DIR)
     if lib_dir:
-        lib_path = os.path.join(lib_dir, lib_name)
+        base_lib = f"libthingboot_device_{base}.a"
+        addon_libs = []
+        if has_ether:
+            addon_libs.append(f"libthingboot_addon_net_ether_{base}.a")
+        if has_gsm:
+            addon_libs.append(f"libthingboot_addon_net_gsm_{base}.a")
 
-        # 如果首选变体不存在，按优先级尝试降级
-        if not os.path.exists(lib_path):
-            try:
-                available = [f for f in os.listdir(lib_dir)
-                             if f.startswith("libthingboot_device_") and f.endswith(".a")]
-                chosen = None
-                for fb in fallback_names(lib_name):
-                    if fb in available:
-                        chosen = fb
-                        break
-                if not chosen:
-                    # 最后尝试同平台任意变体
-                    base_prefix = f"libthingboot_device_{base}"
-                    for f in available:
-                        if f.startswith(base_prefix):
-                            chosen = f
-                            break
-                if chosen:
-                    lib_name = chosen
-                    lib_path = os.path.join(lib_dir, lib_name)
-            except Exception:
-                pass
-
-        if os.path.exists(lib_path):
+        base_path = os.path.join(lib_dir, base_lib)
+        if os.path.exists(base_path):
             env.Append(LIBPATH=[lib_dir])
-            env.Prepend(LIBS=[lib_name[3:-2]])
-            print("[thingboot_device] Linked: " + lib_name)
+            env.Prepend(LIBS=[base_lib[3:-2]])
+            print("[thingboot_device] Linked: " + base_lib)
         else:
-            print("[thingboot_device] WARNING: Not found " + lib_path)
+            print("[thingboot_device] WARNING: Not found " + base_path)
+
+        # addon 后于 base 加入（LIBS 前置），最终顺序为 addon 在前、base 在后：
+        # 用户经 install() 引用 addon 符号，addon 引用 base 的驱动表符号，
+        # 反序会导致 ld 单趟扫描漏拉 base 对象
+        for addon_lib in addon_libs:
+            addon_path = os.path.join(lib_dir, addon_lib)
+            if os.path.exists(addon_path):
+                env.Append(LIBPATH=[lib_dir])
+                env.Prepend(LIBS=[addon_lib[3:-2]])
+                print("[thingboot_device] Linked addon: " + addon_lib)
+            else:
+                print(f"[thingboot_device] WARNING: 未找到联网 addon 库 {addon_path}")
+                print(f"[thingboot_device] WARNING: 对应功能将不可用（install 返回 ERR_NETWORK_ABI_MISMATCH）")
     else:
         print("[thingboot_device] WARNING: 找不到 SDK lib 目录")
