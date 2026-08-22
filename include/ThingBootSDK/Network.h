@@ -3,12 +3,23 @@
 
 class ThingBootDevice;
 
+// ---- 联网 addon 安装函数（链接对应 addon 后，在 device.setup() 前调用）----
+// 返回 ERR_OK 成功；ERR_NETWORK_ABI_MISMATCH 表示 addon 与 base 版本不一致。
+// 也可经成员转发版 Network.installEthernet()/installGSM() 调用（等价）
+uint16_t tb_addon_net_ether_install();
+uint16_t tb_addon_net_gsm_install();
+
 class ThingBootNetwork {
 private:
     ThingBootDevice* _device;
 
 public:
     ThingBootNetwork(ThingBootDevice* device = nullptr) : _device(device) {}
+
+    // addon 安装（自由函数 tb_addon_net_*_install() 的成员转发版，完全等价，
+    // 供编辑器提示发现；未链接对应 addon 库时不要调用）
+    uint16_t installEthernet() { return tb_addon_net_ether_install(); }
+    uint16_t installGSM() { return tb_addon_net_gsm_install(); }
 
     // 获取当前网络信息（JSON 字符串）
     // Get current network information as JSON string
@@ -68,10 +79,5 @@ public:
     // The caller must call begin() on the serial port before using GSM.
     void setGSMSerialPort(Stream* serial, uint32_t baud = 0);
 };
-
-// ---- 联网 addon 安装函数（链接对应 addon 后，在 device.setup() 前调用）----
-// 返回 ERR_OK 成功；ERR_NETWORK_ABI_MISMATCH 表示 addon 与 base 版本不一致
-uint16_t tb_addon_net_ether_install();
-uint16_t tb_addon_net_gsm_install();
 
 #endif

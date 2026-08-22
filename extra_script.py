@@ -20,6 +20,7 @@ build_flags_lower = build_flags_str.lower()
 has_debug = "-dtbd_debug" in build_flags_lower or "-d tbd_debug" in build_flags_lower
 has_ether = "-dtbd_ether" in build_flags_lower or "-d tbd_ether" in build_flags_lower
 has_gsm   = "-dtbd_gsm"   in build_flags_lower or "-d tbd_gsm"   in build_flags_lower
+has_gateway = "-dtbd_gateway" in build_flags_lower or "-d tbd_gateway" in build_flags_lower
 
 if has_debug:
     print("[thingboot_device] NOTE: -DTBD_DEBUG 已废弃，日志恒带（device.onDebug 注册即输出），将链接 base 库")
@@ -88,6 +89,8 @@ if base:
             addon_libs.append(f"libthingboot_addon_net_ether_{base}.a")
         if has_gsm:
             addon_libs.append(f"libthingboot_addon_net_gsm_{base}.a")
+        if has_gateway:
+            addon_libs.append(f"libthingboot_addon_gateway_{base}.a")
 
         base_path = os.path.join(lib_dir, base_lib)
         if os.path.exists(base_path):

@@ -67,14 +67,10 @@ platform = espressif8266
 board = esp12e
 framework = arduino
 
-; 可选功能开关，extra_script.py 会根据开关自动选择对应预编译库
-; build_flags = -DTBD_ETHER          ; 启用以太网支持
-; build_flags = -DTBD_GSM            ; 启用 GSM 支持
-; build_flags = -DTBD_DEBUG          ; 启用 SDK 调试日志输出
-; build_flags = -DTBD_ETHER -DTBD_GSM -DTBD_DEBUG
-
 lib_deps = https://github.com/ThingBoot/thingboot-device-esp-arduino-sdk.git
 ```
+
+默认即为 WiFi 联网（base 库自动链接）。需要以太网 / GSM 时见下文「联网扩展（addon）」；调试日志无需开关，注册 `device.onDebug` 回调即输出。
 
 #### 2. 包含头文件
 
@@ -95,11 +91,11 @@ void setup() {
     device.setProduct("your-product-key", "your-product-secret",
                       "your-board", "your-mcu", "your-firmware-version");
 
-    // 注册平台命令回调
-    device.Order.onOrder([](const char* name, JSONVar data) {
+    // 注册平台命令回调（首参为消息 ID mid，应答时原样传回）
+    device.Order.onOrder([](const char* mid, JSONVar data) {
         Serial.print("收到命令: ");
-        Serial.println(name);
-        device.Order.replyMessage("{\"result\":\"ok\"}");
+        Serial.println(JSON.stringify(data));
+        device.Order.replyMessage(mid, "{\"result\":\"ok\"}");
     });
 
     // 初始化 SDK（连接网络、登录平台等）
@@ -124,7 +120,7 @@ void loop() {
 
 ```properties
 name=ThingBootSDK
-version=1.0.1
+version=1.3.0
 author=ThingBoot
 maintainer=support@thingboot.com
 sentence=ThingBoot Device SDK
@@ -137,7 +133,7 @@ precompiled=true
 
 7. 打开示例 **文件 → 示例 → ThingBootSDK → BasicUsage**，编译上传。
 
-> Arduino IDE 仅建议用于快速体验；功能开关（以太网/GSM/Debug）需要配合 `platformio.ini` 才能灵活切换。
+> Arduino IDE 仅建议用于快速体验；联网扩展（以太网/GSM addon）需要配合 `platformio.ini` 才能灵活启用。
 
 ## 目录结构
 
@@ -147,16 +143,11 @@ lib/thingboot-device-esp-arduino-sdk/
 │   └── ThingBootSDK.h            # 公共 API 头文件
 │   └── ThingBootSDK/             # 按模块拆分的公共头文件
 ├── lib/
-│   ├── libthingboot_device_esp8266.a
-│   ├── libthingboot_device_esp8266_debug.a
-│   ├── libthingboot_device_esp8266_ether.a
-│   ├── libthingboot_device_esp8266_ether_debug.a
-│   ├── libthingboot_device_esp8266_gsm.a
-│   ├── libthingboot_device_esp8266_gsm_debug.a
-│   ├── libthingboot_device_esp8266_ether_gsm.a
-│   ├── libthingboot_device_esp8266_ether_gsm_debug.a
+│   ├── libthingboot_device_esp8266.a            # base 库（按芯片区分，自动链接）
 │   ├── libthingboot_device_esp32.a
-│   └── ...                       # ESP32 各变体
+│   ├── libthingboot_addon_net_ether_esp8266.a   # addon 库（以太网，按需）
+│   ├── libthingboot_addon_net_gsm_esp8266.a     # addon 库（GSM，按需）
+│   └── ...                       # 其余芯片的 base + addon
 ├── examples/
 │   └── BasicUsage/
 │       ├── BasicUsage.ino
@@ -168,15 +159,29 @@ lib/thingboot-device-esp-arduino-sdk/
 └── LICENSE.md
 ```
 
-## 功能开关说明
+## 联网扩展（addon）
 
-| 宏 | 说明 | 生成的库名后缀 |
-|---|---|---|
-| `TBD_ETHER` | 启用以太网（W5500）支持 | `_ether` |
-| `TBD_GSM` | 启用 4G Cat.1（ML307）支持 | `_gsm` |
-| `TBD_DEBUG` | 启用 SDK 内部调试日志输出 | `_debug` |
+v1.3 起联网模块改为 addon 模型：base 库内含 WiFi 与全部平台能力，以太网 / GSM 为独立 addon 库，按需启用。两步：
 
-多个开关可组合使用，例如 `-DTBD_ETHER -DTBD_GSM -DTBD_DEBUG` 对应 `libthingboot_device_esp8266_ether_gsm_debug.a`。
+1. 在 `platformio.ini` 的 `build_flags` 打开开关，`extra_script.py` 会追加链接对应 addon 库：
+   - `-DTBD_ETHER` → `libthingboot_addon_net_ether_<芯片>.a`（以太网 W5500）
+   - `-DTBD_GSM` → `libthingboot_addon_net_gsm_<芯片>.a`（4G Cat.1 ML307；另需在 `lib_deps` 添加 `GSM` 库（TinyGSM））
+2. 在代码中 `device.setup()` 之前调用安装函数注册驱动（成员写法为自由函数 `tb_addon_net_*_install()` 的转发版，等价）：
+
+```cpp
+device.Network.installEthernet();  // 以太网
+device.Network.installGSM();       // GSM/4G
+```
+
+未安装驱动时调用相关 `Network` 接口返回 `ERR_NETWORK_DRIVER_MISSING`（20002）。两个 addon 可同时启用。
+
+> `TBD_DEBUG` 已废弃：v1.3 起调试日志恒带于库中，注册 `device.onDebug` 回调即可输出，无需任何编译宏。
+
+## 网关（addon）
+
+网关类产品（子设备表维护 + 平台消息转发，与传输层无关）：`build_flags` 加 `-DTBD_GATEWAY`，并在 `device.setup()` 前调用 `device.Gateway.install()`（自由函数 `tb_addon_gateway_install()` 的转发版；install 即角色），再用 `device.Gateway.onChildOrder()` 注册子设备命令回调。详见官方文档「网关」章节。
+
+> **ESP8266 1MB Flash 机型注意**：网关 addon 依赖 LittleFS 存储子设备表，1MB 机型将无法支持 OTA，请勿用于需要 OTA 的产品。
 
 ## 第三方开源软件声明
 

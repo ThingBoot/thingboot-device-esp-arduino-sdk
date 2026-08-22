@@ -66,14 +66,10 @@ platform = espressif8266
 board = esp12e
 framework = arduino
 
-; Optional feature switches. extra_script.py will automatically pick the matching precompiled library.
-; build_flags = -DTBD_ETHER          ; Enable Ethernet support
-; build_flags = -DTBD_GSM            ; Enable GSM support
-; build_flags = -DTBD_DEBUG          ; Enable SDK debug log output
-; build_flags = -DTBD_ETHER -DTBD_GSM -DTBD_DEBUG
-
 lib_deps = https://github.com/ThingBoot/thingboot-device-esp-arduino-sdk.git
 ```
+
+WiFi connectivity works out of the box (the base library is linked automatically). For Ethernet / GSM see "Connectivity Addons" below. Debug logs need no switch — register a `device.onDebug` callback to receive them.
 
 #### 2. Include Header
 
@@ -95,10 +91,10 @@ void setup() {
                       "your-board", "your-mcu", "your-firmware-version");
 
     // Register platform command callback
-    device.Order.onOrder([](const char* name, JSONVar data) {
+    device.Order.onOrder([](const char* mid, JSONVar data) {
         Serial.print("Received order: ");
-        Serial.println(name);
-        device.Order.replyMessage("{\"result\":\"ok\"}");
+        Serial.println(JSON.stringify(data));
+        device.Order.replyMessage(mid, "{\"result\":\"ok\"}");
     });
 
     // Initialize SDK (connect network, log in to platform, etc.)
@@ -123,7 +119,7 @@ void loop() {
 
 ```properties
 name=ThingBootSDK
-version=1.0.1
+version=1.3.0
 author=ThingBoot
 maintainer=support@thingboot.com
 sentence=ThingBoot Device SDK
@@ -146,16 +142,11 @@ lib/thingboot-device-esp-arduino-sdk/
 │   └── ThingBootSDK.h            # Public API header
 │   └── ThingBootSDK/             # Public headers grouped by module
 ├── lib/
-│   ├── libthingboot_device_esp8266.a
-│   ├── libthingboot_device_esp8266_debug.a
-│   ├── libthingboot_device_esp8266_ether.a
-│   ├── libthingboot_device_esp8266_ether_debug.a
-│   ├── libthingboot_device_esp8266_gsm.a
-│   ├── libthingboot_device_esp8266_gsm_debug.a
-│   ├── libthingboot_device_esp8266_ether_gsm.a
-│   ├── libthingboot_device_esp8266_ether_gsm_debug.a
+│   ├── libthingboot_device_esp8266.a            # Base libraries (per chip, linked automatically)
 │   ├── libthingboot_device_esp32.a
-│   └── ...                       # ESP32 variants
+│   ├── libthingboot_addon_net_ether_esp8266.a   # Addon library (Ethernet, on demand)
+│   ├── libthingboot_addon_net_gsm_esp8266.a     # Addon library (GSM, on demand)
+│   └── ...                       # Base + addons for the other chips
 ├── examples/
 │   └── BasicUsage/
 │       ├── BasicUsage.ino
@@ -167,15 +158,29 @@ lib/thingboot-device-esp-arduino-sdk/
 └── LICENSE.md
 ```
 
-## Feature Switches
+## Connectivity Addons
 
-| Macro | Description | Library filename suffix |
-|---|---|---|
-| `TBD_ETHER` | Enable Ethernet (W5500) support | `_ether` |
-| `TBD_GSM` | Enable 4G Cat.1 (ML307) support | `_gsm` |
-| `TBD_DEBUG` | Enable SDK internal debug log output | `_debug` |
+Since v1.3, connectivity modules use an addon model: the base library includes WiFi and all platform capabilities; Ethernet / GSM ship as separate addon libraries, enabled on demand. Two steps:
 
-Multiple switches can be combined, e.g. `-DTBD_ETHER -DTBD_GSM -DTBD_DEBUG` selects `libthingboot_device_esp8266_ether_gsm_debug.a`.
+1. Add the switch to `build_flags` in `platformio.ini` — `extra_script.py` will link the matching addon library:
+   - `-DTBD_ETHER` → `libthingboot_addon_net_ether_<chip>.a` (Ethernet, W5500)
+   - `-DTBD_GSM` → `libthingboot_addon_net_gsm_<chip>.a` (4G Cat.1 ML307; also add the `GSM` library (TinyGSM) to `lib_deps`)
+2. Call the install function in your code before `device.setup()` to register the driver (member-style calls are equivalent wrappers of the free functions `tb_addon_net_*_install()`):
+
+```cpp
+device.Network.installEthernet();  // Ethernet
+device.Network.installGSM();       // GSM/4G
+```
+
+Calling the related `Network` APIs without an installed driver returns `ERR_NETWORK_DRIVER_MISSING` (20002). Both addons can be enabled together.
+
+> `TBD_DEBUG` is deprecated: since v1.3 debug logs are always compiled in; register a `device.onDebug` callback to receive them — no build flag needed.
+
+## Gateway Addon
+
+For gateway products (child device table maintenance + platform message forwarding, transport-agnostic): add `-DTBD_GATEWAY` to `build_flags` and call `device.Gateway.install()` before `device.setup()` (a wrapper of the free function `tb_addon_gateway_install()`; install declares the role), then register the child order callback via `device.Gateway.onChildOrder()`. See the "Gateway" chapter of the official documentation.
+
+> **ESP8266 with 1MB flash**: the gateway addon stores the child table in LittleFS — OTA will not be possible on 1MB parts. Do not use it on products that need OTA.
 
 ## Third-Party Open-Source Software Notice
 

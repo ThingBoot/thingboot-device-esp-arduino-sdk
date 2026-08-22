@@ -107,5 +107,8 @@
 #define ERR_NETWORK_OK                      0
 #define ERR_NETWORK_DRIVER_MISSING          20002
 #define ERR_NETWORK_ABI_MISMATCH            20003
+#define ERR_GATEWAY_DRIVER_MISSING          20004
+#define ERR_GATEWAY_CHILD_FULL              20005
+#define ERR_GATEWAY_CHILD_NOT_FOUND         20006
 
 #endif

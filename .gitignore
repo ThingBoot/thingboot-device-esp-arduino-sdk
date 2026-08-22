@@ -5,3 +5,7 @@
 .vscode/ipch
 __pycache__/
 *.pyc
+
+# 本地版本管理：dist 是独立 git 仓库（发布专用），不纳入本仓库
+dist/
+dist.zip
