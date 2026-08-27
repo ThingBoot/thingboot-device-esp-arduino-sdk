@@ -255,4 +255,11 @@ inline String md5(String data, uint8_t len = 32)
     return md5.toString().substring(begin, begin + len);
 }
 
+// 复制字符串到目标缓冲区（目标缓冲区需有足够容量；str2 为 nullptr 时目标置空串）
+// Copy string to destination buffer (destination must have enough capacity;
+// a nullptr str2 clears the destination to an empty string)
+void str_copy(char* str1, String str2);
+void str_copy(char* str1, const char* str2);
+void str_copy(char* str1, JSONVar str2);
+
 #endif
