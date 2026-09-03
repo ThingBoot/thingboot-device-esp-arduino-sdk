@@ -26,6 +26,48 @@
 - **Hardware Minimalism**: Developers only write peripheral drivers (LED, relay, sensor, etc.); platform-side thing models close the feature loop.
 - **Precompiled & Closed-Source**: Distributed as `.a` static libraries + headers. Source code is not available.
 
+## Capability Overview
+
+### Connectivity & Provisioning
+
+- **WiFi**: multi-candidate connection (5 candidates + hidden APs), automatic reconnect, zombie-AP (connected but no Internet) detection and failover
+- **AP provisioning**: automatic `TBC-<deviceID>` hotspot + HTTP config API when unconfigured — connect a phone and go
+- **Engineering hotspots**: automatic recognition of safe / factory / test / debug / config hotspots — factory activation, production testing and debugging with zero code
+
+### Network Modes
+
+- **WiFi**: built into the base library, works out of the box (ESP8266 / all ESP32 variants)
+- **Ethernet / GSM**: on-demand addons (W5500 SPI Ethernet, ML307 4G Cat.1)
+- **WiFi Mesh**: ESP-NOW master/slave, gateway, discovery & binding (find/bind), message bridging, channel management
+
+### Platform Connection
+
+- **Registration & activation**: reg/v3 signing protocol, activation-code verification, workbench assignment
+- **MQTT**: 8 downlink topic subscriptions, last will, QoS1, automatic reconnect, uplink/downlink packing and dispatch
+- **Thing model**: full Order / Event / State / Config pipelines
+- **OTA**: three-stage flow (signed download → magic pre-check & flash → reboot → report at registration) with automatic retries
+- **NTP**: dual-channel sync (via registration + MQTT), timezone management
+
+### Local & Private Deployment
+
+- **LAN services**: HTTP/TCP interfaces in LAN-only mode — **local control even without Internet**
+- **Private deployment**: private broker (MQTT credentials / topics / registration path override), private gateway (HTTP sync responses / heartbeat)
+
+### Gateway (addon)
+
+- **Child table**: child ID / key / active-time maintenance with persistence and automatic online detection (configurable timeout)
+- **Message forwarding**: platform orders routed to children through the product's own transport (RF / RS485 / Zigbee, ...); child messages uplinked via the gateway
+- **Platform consistency**: change events (add/remove/online/offline), reconcile-on-connect, platform management primitives — all built in, zero code
+
+### Developer Experience
+
+- **Addon model**: base library always linked + addons on demand (ether / gsm / gateway) — `install()` and go
+- **Debug logs**: always compiled in; register `device.onDebug()` to receive category-tagged logs, no build flags
+- **Peripheral framework**: button debounce / long-press system menu (5 s provisioning, 7 s safe mode), three-state LED machine
+- **Config system**: declarative config items (defaults / range checks / readable & writable via provisioning and platform)
+- **Tooling**: JSON compatibility layer (Arduino_JSON usage), timers, full error-code set, boot logs that decode cleanly
+
+
 ## Supported Platforms
 
 | Platform | MCU | Status |
@@ -189,7 +231,7 @@ This SDK is built upon the following open-source projects (in addition to the Ar
 | Project | Repository | License |
 |---|---|---|
 | ArduinoHttpClient | https://github.com/arduino-libraries/ArduinoHttpClient | Apache-2.0 |
-| Arduino_JSON (ArduinoJson) | https://github.com/bblanchon/ArduinoJson | MIT |
+| Arduino_JSON | https://github.com/arduino-libraries/Arduino_JSON | LGPL-2.1 |
 | PubSubClient | https://github.com/knolleary/pubsubclient | MIT |
 
 You are responsible for ensuring that your final firmware complies with the applicable open-source license requirements. ThingBoot assumes no liability for third-party open-source license compliance.

@@ -27,6 +27,48 @@
 - **硬件极简**：开发者仅需编写 LED、继电器、传感器等硬件驱动，平台端定义物模型即可完成功能闭环
 - **预编译闭源**：以 `.a` 静态库 + 头文件分发，源码不开放
 
+## 功能概览
+
+### 接入与配网
+
+- **WiFi 联网**：多候选连接（5 个候选 + 隐藏热点）、断线自动重连、僵尸热点（能连但无外网）识别与换网
+- **AP 配网**：未配置时自动开放 `TBC-<设备ID>` 热点 + HTTP 配置接口，手机直连即配
+- **工程热点**：safe / factory / test / debug / config 五类工程热点自动识别——工厂激活、产线测试、开发调试零代码接入
+
+### 网络形态
+
+- **WiFi**：base 库内置，开箱即用（ESP8266 / ESP32 全系）
+- **以太网 / GSM**：addon 按需启用（W5500 SPI 以太网、ML307 4G Cat.1）
+- **WiFi Mesh 组网**：ESP-NOW 主从 / 网关、发现绑定（find/bind）、消息桥接、信道管理
+
+### 平台连接
+
+- **注册与激活**：reg/v3 签名协议、激活码校验、工作台归属
+- **MQTT**：8 个下行主题订阅、遗嘱消息、QoS1、断线自动重连、上下行报文组包与分发
+- **物模型**：命令（Order）/ 事件（Event）/ 状态（State）/ 配置（Config）全链路
+- **OTA 升级**：三段式流程（签名下载 → 魔数预检烧写 → 重启 → 注册时上报结果），失败自动重试
+- **NTP 对时**：注册顺带 + MQTT 请求双通路，时区管理
+
+### 本地与私有化
+
+- **局域网服务**：纯局域网模式开放 HTTP/TCP 接口，**无网也可本地控制**
+- **私有化部署**：私有 broker（MQTT 参数 / 主题 / 注册路径替换）、私有网关（HTTP 同步应答 / 心跳）
+
+### 网关（addon）
+
+- **子设备表**：ID / 键 / 活动时间维护，持久化存储，在线状态自动判定（可配时限）
+- **消息转发**：平台命令按子设备查表转发到产品传输层（RF / RS485 / Zigbee 等自定），子设备消息经网关上行
+- **平台一致性**：变更即上报（增删 / 上下线事件）、上线即对账、平台增删查管理原语，SDK 内置零实现
+
+### 开发体验
+
+- **addon 模型**：base 库必链 + addon 按需追加（ether / gsm / gateway），`install()` 即启用
+- **调试日志**：全库恒带，`device.onDebug()` 注册即输出，按模块分类过滤，无需编译开关
+- **外设框架**：按钮消抖 / 长按系统菜单（5s 配网 / 7s 安全模式）、LED 三态状态机
+- **配置体系**：Config 声明式配置项（默认值 / 范围校验 / 配网与平台可读写）
+- **工具链**：JSON 兼容层（Arduino_JSON 用法）、Timer 定时器、全量错误码、异常解码友好的启动日志
+
+
 ## 支持平台
 
 | 平台 | 芯片 | 状态 |
@@ -190,7 +232,7 @@ device.Network.installGSM();       // GSM/4G
 | 项目 | 仓库 | 许可证 |
 |---|---|---|
 | ArduinoHttpClient | https://github.com/arduino-libraries/ArduinoHttpClient | Apache-2.0 |
-| Arduino_JSON (ArduinoJson) | https://github.com/bblanchon/ArduinoJson | MIT |
+| Arduino_JSON | https://github.com/arduino-libraries/Arduino_JSON | LGPL-2.1 |
 | PubSubClient | https://github.com/knolleary/pubsubclient | MIT |
 
 用户需确保最终固件符合所使用开源组件的许可证要求。芯步不对第三方开源组件的许可证合规性承担责任。
