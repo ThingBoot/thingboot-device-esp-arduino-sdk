@@ -2,7 +2,7 @@
 #define THINGBOOT_SDK_UTILS_H
 
 #include <Arduino.h>
-#include <Arduino_JSON.h>
+#include "JSON.h"
 
 // 将 JSONVar 转换为 String
 // Convert JSONVar to String

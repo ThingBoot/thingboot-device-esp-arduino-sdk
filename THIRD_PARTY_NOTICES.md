@@ -26,7 +26,7 @@ ThingBoot Device SDK （以下简称“本 SDK”）在编译和运行过程中�
 
 | 项目 | 仓库 | 许可证 | 是否打包进 `.a` |
 |---|---|---|---|
-| Arduino_JSON | https://github.com/arduino-libraries/Arduino_JSON | LGPL-2.1 | 是 |
+| cJSON | https://github.com/DaveGamble/cJSON | MIT | 是（JSON 兼容层基础） |
 | ArduinoHttpClient | https://github.com/arduino-libraries/ArduinoHttpClient | Apache-2.0 | 是 |
 | PubSubClient | https://github.com/knolleary/pubsubclient | MIT | 是 |
 
@@ -36,21 +36,9 @@ ThingBoot Device SDK （以下简称“本 SDK”）在编译和运行过程中�
 
 ## 3. LGPL 重新链接说明
 
-由于本 SDK 以**静态库（`.a`）**形式分发，并且其中打包了 LGPL 许可的第三方库对象文件，根据 LGPL 的要求，最终固件的接收者应当有权重新链接这些 LGPL 组件。
+本 SDK 以**静态库（`.a`）**形式分发。SDK 库本身**不包含任何 LGPL 组件的对象文件**（直接依赖全部为 MIT/Apache-2.0）；LGPL 仅来自最终固件链接的平台核心库（ESP8266 Arduino Core / arduino-esp32，由 PlatformIO 提供并链接，本 SDK 不复制其源码）。
 
-为满足该要求：
-
-1. **本 SDK 的 `.o` 对象文件**：
-   - 在本地执行 `pio run` 构建后，可在 `.pio/build/<env>/src/` 和 `.pio/build/<env>/lib*/` 下找到。
-   - 需要这些对象文件以重新链接的开发者，可通过向 ThingBoot 申请或自行从本仓库源码编译获得。
-
-2. **本 SDK 的源码**：
-   - 本 SDK 的头文件（`include/`）随库一起分发。
-   - 开发者可基于头文件和 `.o` 对象文件，替换其中的 LGPL 组件后重新链接固件。
-
-3. **最终固件开发者的义务**：
-   - 若最终产品固件包含 LGPL 组件，开发者应遵守 LGPL 关于源代码/对象文件提供、许可声明、修改告知等义务。
-   - ThingBoot 仅提供 SDK 层面的依赖信息，最终固件的合规责任由最终开发者承担。
+若最终产品固件包含上述 LGPL 平台组件，开发者应遵守 LGPL 关于源代码/对象文件提供、许可声明、修改告知等义务。ThingBoot 仅提供 SDK 层面的依赖信息，最终固件的合规责任由最终开发者承担。
 
 ---
 

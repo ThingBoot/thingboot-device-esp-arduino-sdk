@@ -1,6 +1,6 @@
 {
   "name": "thingboot-device-esp-arduino-sdk",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "author": "ThingBoot",
   "maintainer": "support@thingboot.com",
   "sentence": "ThingBoot Device SDK - connect ESP devices quickly to ThingBoot IoT platform",
@@ -20,7 +20,6 @@
     "extraScript": "extra_script.py"
   },
   "dependencies": {
-    "Arduino_JSON": "^0.2.0",
     "ArduinoHttpClient": "^0.6.1",
     "PubSubClient": "^2.8.0"
   }

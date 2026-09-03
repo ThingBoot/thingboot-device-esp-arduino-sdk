@@ -65,7 +65,7 @@
 - **Debug logs**: always compiled in; register `device.onDebug()` to receive category-tagged logs, no build flags
 - **Peripheral framework**: button debounce / long-press system menu (5 s provisioning, 7 s safe mode), three-state LED machine
 - **Config system**: declarative config items (defaults / range checks / readable & writable via provisioning and platform)
-- **Tooling**: JSON compatibility layer (Arduino_JSON usage), timers, full error-code set, boot logs that decode cleanly
+- **Tooling**: JSON compatibility layer (cJSON-based, Arduino_JSON-compatible usage), timers, full error-code set, boot logs that decode cleanly
 
 
 ## Supported Platforms
