@@ -42,7 +42,7 @@
 
 ### Platform Connection
 
-- **Registration & activation**: reg/v3 signing protocol, activation-code verification, workbench assignment
+- **Registration & activation**: reg/v4 signing protocol, activation-code verification, workbench assignment
 - **MQTT**: 8 downlink topic subscriptions, last will, QoS1, automatic reconnect, uplink/downlink packing and dispatch
 - **Thing model**: full Order / Event / State / Config pipelines
 - **OTA**: three-stage flow (signed download → magic pre-check & flash → reboot → report at registration) with automatic retries
@@ -231,7 +231,7 @@ This SDK is built upon the following open-source projects (in addition to the Ar
 | Project | Repository | License |
 |---|---|---|
 | ArduinoHttpClient | https://github.com/arduino-libraries/ArduinoHttpClient | Apache-2.0 |
-| Arduino_JSON | https://github.com/arduino-libraries/Arduino_JSON | LGPL-2.1 |
+| cJSON | https://github.com/DaveGamble/cJSON | MIT |
 | PubSubClient | https://github.com/knolleary/pubsubclient | MIT |
 
 You are responsible for ensuring that your final firmware complies with the applicable open-source license requirements. ThingBoot assumes no liability for third-party open-source license compliance.

@@ -43,7 +43,7 @@
 
 ### 平台连接
 
-- **注册与激活**：reg/v3 签名协议、激活码校验、工作台归属
+- **注册与激活**：reg/v4 签名协议、激活码校验、工作台归属
 - **MQTT**：8 个下行主题订阅、遗嘱消息、QoS1、断线自动重连、上下行报文组包与分发
 - **物模型**：命令（Order）/ 事件（Event）/ 状态（State）/ 配置（Config）全链路
 - **OTA 升级**：三段式流程（签名下载 → 魔数预检烧写 → 重启 → 注册时上报结果），失败自动重试
@@ -232,7 +232,7 @@ device.Network.installGSM();       // GSM/4G
 | 项目 | 仓库 | 许可证 |
 |---|---|---|
 | ArduinoHttpClient | https://github.com/arduino-libraries/ArduinoHttpClient | Apache-2.0 |
-| Arduino_JSON | https://github.com/arduino-libraries/Arduino_JSON | LGPL-2.1 |
+| cJSON | https://github.com/DaveGamble/cJSON | MIT |
 | PubSubClient | https://github.com/knolleary/pubsubclient | MIT |
 
 用户需确保最终固件符合所使用开源组件的许可证要求。芯步不对第三方开源组件的许可证合规性承担责任。
