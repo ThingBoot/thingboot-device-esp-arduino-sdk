@@ -25,6 +25,14 @@ public:
     // Get current network information as JSON string
     String getNetworkInfo();
 
+    // 网络变化回调（主循环上下文触发）
+    // event：NETWORK_EVENT_OFFLINE 网络断开 / NETWORK_EVENT_ONLINE 网络就绪 /
+    //        NETWORK_EVENT_TYPE_CHANGED 联网类型切换
+    // type：网络类型 "wifi"/"ether"/"gsm"；OFFLINE 时为断开前的网络类型
+    // 未注册不触发
+    // Network change callback (fired in the main loop context)
+    void onNetworkChange(std::function<void(NETWORK_EVENT event, const char* type)> callback);
+
     // 连接 WiFi
     // Connect to WiFi
     void connectWiFi();

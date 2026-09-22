@@ -26,6 +26,13 @@ enum SYS_TOPIC : uint8_t {
     TOPIC_COUNT  // 主题数量 / Topic count
 };
 
+// 网络变化事件（Network.onNetworkChange 回调）
+enum NETWORK_EVENT : uint8_t {
+    NETWORK_EVENT_OFFLINE = 0,  // 网络断开（失去可用 IP）
+    NETWORK_EVENT_ONLINE,       // 网络就绪（拿到 IP / PPP 拨号成功）
+    NETWORK_EVENT_TYPE_CHANGED  // 联网类型切换（wifi/ether/gsm），附新类型
+};
+
 // 按钮操作
 enum BTN_OPER : uint8_t {
     BTN_IDLE = 0,
