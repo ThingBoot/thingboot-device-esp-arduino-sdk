@@ -75,7 +75,10 @@ uint64_t getTimestampMs();
 String getTimeString(const char* format = "%Y-%m-%d %H:%M:%S");
 
 // 设置产品信息
+// board（版型）必须用 TB_BOARD("...") 宏包裹传入，如 TB_BOARD("esp32dev")：
+// 宏会把版型标记嵌入固件供云端上传时识别，setProduct 收到的仍是纯版型名。
 // Set product information
+// The board argument must be wrapped with TB_BOARD("..."), e.g. TB_BOARD("esp32dev")
 uint16_t setProduct(const char* key, const char* secret,
     const char* board, const char* mcu, const char* firmware);
 

@@ -41,7 +41,7 @@ void setup()
 	device.setProduct(
 		"xxx", //产品代号[Key]
 		"xxxx", //产品密码[Secret]
-		"demo", //适配PCB板，自由定义
+		TB_BOARD("demo"), //适配PCB板，自由定义（必须用 TB_BOARD 宏包裹，云端上传固件时据此识别版型）
 		"esp8266",  //适配MCU
 		"xxx.xxxxx.xx.xxx"  //当前固件版本号，先在控制台登记新版本，末段xxx为子版本号（自由定义）
 	);

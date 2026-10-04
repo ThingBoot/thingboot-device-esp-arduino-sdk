@@ -33,6 +33,20 @@ inline long CL(JSONVar var)
     return strtol(C(var), NULL, 10);
 }
 
+// 版型标记宏（云端固件识别）
+// 用法：device.setProduct(key, secret, TB_BOARD("esp32dev"), mcu, firmware);
+// 将 "$BOARD$"<name> 以静态常量嵌入固件，云端上传固件时据此识别版型；
+// 表达式值为指向标记 +7 偏移处的指针，即纯版型名（setProduct 收到的值不含任何前缀）。
+// 返回值指向标记内存本身——标记随 setProduct 的调用被真实引用，链接器不会回收。
+// 注意：name 必须是字符串字面量（编译期拼接），不能传变量。
+// Board marker macro (cloud firmware identification). Usage:
+// device.setProduct(key, secret, TB_BOARD("esp32dev"), mcu, firmware);
+// Embeds "$BOARD$"<name> into the firmware binary; evaluates to a pointer to
+// the plain board name (marker + 7). name must be a string literal, not a variable.
+#define TB_BOARD(name) \
+    ([]{ __attribute__((used)) static const char _tb_board_marker[] = "$BOARD$" name; \
+        return _tb_board_marker; }() + 7)
+
 // 拼接多个值为 String（每个参数会先经 CS() 转换）
 // Concatenate multiple values into a String (each argument is converted via CS())
 #define _CAT_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, NAME, ...) NAME
