@@ -42,6 +42,8 @@
 #define ERR_CONFIG_NOT_FOUND                12010
 #define ERR_CONFIG_VALUE_NULL               12011
 #define ERR_CONFIG_WRITE_FAILED             12012
+#define ERR_CONFIG_AUTO_UNSUPPORTED         12013
+#define ERR_CONFIG_NAME_TOO_LONG            12014
 
 /* ============================================================
  *  命令处理（13xxx）
