@@ -26,9 +26,9 @@ public:
     uint16_t addConfig(const char* name, uint16_t pos = TB_CONFIG_AUTO, uint8_t length = 0, const char* group = "", bool hide = false);
 
     // 按 name 读取设备配置值
-    // 当 name 为空字符串时返回 default
+    // 配置未注册或值为空时返回 default_value
     // Read device configuration value by name
-    // Returns default when name is an empty string
+    // Returns default_value when the config is not registered or empty
     String readConfig(const char* name, const char* default_value = "");
 
     // 按 name 保存设备配置值
