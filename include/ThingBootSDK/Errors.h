@@ -57,6 +57,7 @@
 #define ERR_EVENT_NAME_EMPTY                14001
 #define ERR_EVENT_CALLBACK_NULL             14002
 #define ERR_EVENT_NO_SLOT                   14003
+#define ERR_EVENT_NAME_TOO_LONG             14004
 #define ERR_EVENT_VALUE_NULL                14011
 #define ERR_EVENT_NOT_FOUND                 14020
 
@@ -73,6 +74,7 @@
 #define ERR_STATE_CALLBACK_NULL             16002
 #define ERR_STATE_INTERVAL_ZERO             16003
 #define ERR_STATE_NO_SLOT                   16004
+#define ERR_STATE_NAME_TOO_LONG             16005
 
 /* ============================================================
  *  定时器（17xxx）
