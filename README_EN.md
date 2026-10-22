@@ -206,7 +206,7 @@ Since v1.3, connectivity modules use an addon model: the base library includes W
 
 1. Add the switch to `build_flags` in `platformio.ini` — `extra_script.py` will link the matching addon library:
    - `-DTBD_ETHER` → `libthingboot_addon_net_ether_<chip>.a` (Ethernet, W5500)
-   - `-DTBD_GSM` → `libthingboot_addon_net_gsm_<chip>.a` (4G Cat.1 ML307; also add the `GSM` library (TinyGSM) to `lib_deps`)
+   - `-DTBD_GSM` → `libthingboot_addon_net_gsm_<chip>.a` (4G Cat.1 ML307)
 2. Call the install function in your code before `device.setup()` to register the driver (member-style calls are equivalent wrappers of the free functions `tb_addon_net_*_install()`):
 
 ```cpp

@@ -207,7 +207,7 @@ v1.3 起联网模块改为 addon 模型：base 库内含 WiFi 与全部平台能
 
 1. 在 `platformio.ini` 的 `build_flags` 打开开关，`extra_script.py` 会追加链接对应 addon 库：
    - `-DTBD_ETHER` → `libthingboot_addon_net_ether_<芯片>.a`（以太网 W5500）
-   - `-DTBD_GSM` → `libthingboot_addon_net_gsm_<芯片>.a`（4G Cat.1 ML307；另需在 `lib_deps` 添加 `GSM` 库（TinyGSM））
+   - `-DTBD_GSM` → `libthingboot_addon_net_gsm_<芯片>.a`（4G Cat.1 ML307）
 2. 在代码中 `device.setup()` 之前调用安装函数注册驱动（成员写法为自由函数 `tb_addon_net_*_install()` 的转发版，等价）：
 
 ```cpp

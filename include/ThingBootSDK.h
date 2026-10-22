@@ -3,6 +3,7 @@
 
 #include "ThingBootSDK/Types.h"
 #include "ThingBootSDK/Utils.h"
+#include "ThingBootSDK/FIFO.h"
 
 // 内部实现类前向声明
 class ThingBootDeviceImpl;

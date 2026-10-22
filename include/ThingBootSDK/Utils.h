@@ -269,11 +269,92 @@ inline String md5(String data, uint8_t len = 32)
     return md5.toString().substring(begin, begin + len);
 }
 
-// 复制字符串到目标缓冲区（目标缓冲区需有足够容量；str2 为 nullptr 时目标置空串）
-// Copy string to destination buffer (destination must have enough capacity;
-// a nullptr str2 clears the destination to an empty string)
-void str_copy(char* str1, String str2);
-void str_copy(char* str1, const char* str2);
-void str_copy(char* str1, JSONVar str2);
+// ---- 有界字符串复制（保证 \0 终止，超长截断）----
+// 数组目标长度自动推导（模板）；指针目标必须显式给出 dest_size。
+// 注：原无界 2 参版本已移除（防缓冲区溢出），指针型调用点请改用显式 size 版本
+// Bounded string copy (always NUL-terminated, truncates on overflow).
+// Array destinations get automatic bounds; pointer destinations must pass dest_size.
+inline void _str_copy_impl(char* dest, size_t dest_size, const char* src)
+{
+    if (dest == nullptr || dest_size == 0) return;
+    if (src == nullptr) { dest[0] = '\0'; return; }
+    snprintf(dest, dest_size, "%s", src);
+}
+
+// const char* 源
+template<size_t N>
+inline void str_copy(char (&dest)[N], const char* src)              { _str_copy_impl(dest, N, src); }
+inline void str_copy(char* dest, size_t dest_size, const char* src) { _str_copy_impl(dest, dest_size, src); }
+
+// String 源
+template<size_t N>
+inline void str_copy(char (&dest)[N], String src)                   { _str_copy_impl(dest, N, src.c_str()); }
+inline void str_copy(char* dest, size_t dest_size, String src)      { _str_copy_impl(dest, dest_size, src.c_str()); }
+
+// JSONVar 源（null→空串、boolean→"1"/"0"、string→原样、其他→JSON.stringify）
+template<size_t N>
+inline void str_copy(char (&dest)[N], JSONVar src)
+{
+    String t = JSON.typeof(src);
+    if (t == "null")         _str_copy_impl(dest, N, "");
+    else if (t == "boolean") _str_copy_impl(dest, N, src ? "1" : "0");
+    else if (t == "string")  _str_copy_impl(dest, N, (const char*)src);
+    else                     _str_copy_impl(dest, N, JSON.stringify(src).c_str());
+}
+inline void str_copy(char* dest, size_t dest_size, JSONVar src)
+{
+    String t = JSON.typeof(src);
+    if (t == "null")         _str_copy_impl(dest, dest_size, "");
+    else if (t == "boolean") _str_copy_impl(dest, dest_size, src ? "1" : "0");
+    else if (t == "string")  _str_copy_impl(dest, dest_size, (const char*)src);
+    else                     _str_copy_impl(dest, dest_size, JSON.stringify(src).c_str());
+}
+
+// URL 编码（percent-encode 非 unreserved 字符）
+// URL-encode all characters outside the unreserved set (RFC 3986)
+inline String url_encode(String s)
+{
+    static const char* unreserved = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+    String out;
+    out.reserve(s.length() + 16);
+    char hex[4];
+    for (uint8_t c : s)
+    {
+        if (strchr(unreserved, c)) out += (char)c;
+        else { snprintf(hex, sizeof(hex), "%%%02X", c); out += hex; }
+    }
+    return out;
+}
+
+// ---- URL 构造（键值对自动 URL 编码）----
+// 用法：url_build("reg/v4/", "bench", "12", "key", "abc") → "reg/v4/?bench=12&key=abc"
+inline String _url_val(const char* v)     { return v ? String(v) : String(""); }
+inline String _url_val(const String& v)   { return v; }
+inline String _url_val(int v)             { return String(v); }
+inline String _url_val(unsigned int v)    { return String(v); }
+inline String _url_val(long v)            { return String(v); }
+inline String _url_val(unsigned long v)   { return String(v); }
+
+inline void _url_append(String& url, bool& first) {}
+
+template<typename V, typename... Rest>
+void _url_append(String& url, bool& first, const char* key, V&& v, Rest&&... rest)
+{
+    url += first ? "?" : "&";
+    first = false;
+    url += key;
+    url += "=";
+    url += url_encode(_url_val(v));
+    _url_append(url, first, rest...);
+}
+
+// 构造 URL：base 为路径（可已含 ?），后续为 键,值 对序列，值自动编码
+template<typename... Args>
+String url_build(String base, Args&&... args)
+{
+    bool first = base.indexOf('?') < 0;
+    _url_append(base, first, args...);
+    return base;
+}
 
 #endif

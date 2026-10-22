@@ -37,7 +37,7 @@
 
 #include <Ticker.h>
 
-#define THINGBOOT_SDK_VERSION "1.9.3"
+#define THINGBOOT_SDK_VERSION "1.10.0"
 
 #include <ThingBootSDK/Enums.h>
 #include <ThingBootSDK/Errors.h>
@@ -51,11 +51,11 @@
 #define LED_MAX     4
 #endif
 
-// ROM 配置映射最大项数（ESP32 下 64 个，ESP8266 下 32 个）
+// ROM 配置映射最大项数（ESP32 / ESP8266 均 128 个；多路控制器类产品需要，见 uni-kzq）
 #ifdef ESP32
-#define ROM_DEVICE_MAX 64
+#define ROM_DEVICE_MAX 128
 #else
-#define ROM_DEVICE_MAX 32
+#define ROM_DEVICE_MAX 128
 #endif
 
 class ThingBootDeviceImpl;
