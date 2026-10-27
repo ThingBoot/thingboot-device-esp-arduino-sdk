@@ -18,6 +18,7 @@
 #define ERR_MODULE_PERIPHERAL   18
 #define ERR_MODULE_DEBUG        19
 #define ERR_MODULE_NETWORK      20
+#define ERR_MODULE_API          22
 
 /* ============================================================
  *  系统核心（10xxx）
@@ -114,5 +115,16 @@
 #define ERR_GATEWAY_DRIVER_MISSING          20004
 #define ERR_GATEWAY_CHILD_FULL              20005
 #define ERR_GATEWAY_CHILD_NOT_FOUND         20006
+
+/* ============================================================
+ *  API 请求（22xxx）
+ * ============================================================ */
+#define ERR_API_OK                          0
+#define ERR_API_BUSY                        22001
+#define ERR_API_INVALID                     22002
+#define ERR_API_TIMEOUT                     22003
+#define ERR_API_SUBSCRIBE                   22004
+#define ERR_API_PUBLISH                     22005
+#define ERR_API_TOO_LARGE                   22006
 
 #endif

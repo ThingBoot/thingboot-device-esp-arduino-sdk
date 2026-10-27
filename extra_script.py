@@ -25,6 +25,24 @@ has_gateway = "-dtbd_gateway" in build_flags_lower or "-d tbd_gateway" in build_
 if has_debug:
     print("[thingboot_device] NOTE: -DTBD_DEBUG 已废弃，日志恒带（device.onDebug 注册即输出），将链接 base 库")
 
+# S2：gateway addon 的子设备表存于 LittleFS（框架内建库）；下游工程若不显式
+# include LittleFS.h，LDF 不会编译该库，导致 VFSImpl 等符号链接缺失。
+# 机制：本脚本在 GetLibBuilders() 构造期执行（早于 project 消费 lib_deps），
+# 向 ProjectConfig 内存实例注入内建库 lib_deps 条目即可——process_dependencies
+# 对内建库按名字识别（piolib.py 的 _is_builtin / 名字匹配分支），LittleFS 随之编译链接。
+if has_gateway:
+    try:
+        config = env.GetProjectConfig()
+        section = "env:" + env["PIOENV"]
+        lib_deps = config.get(section, "lib_deps", [])
+        if isinstance(lib_deps, str):
+            lib_deps = [lib_deps]
+        if not any(str(d).strip() == "LittleFS" for d in lib_deps):
+            config.set(section, "lib_deps", list(lib_deps) + ["LittleFS"])
+            print("[thingboot_device] gateway addon: 已注入 LittleFS 框架库依赖（lib_deps）")
+    except Exception as exc:
+        print(f"[thingboot_device] WARNING: LittleFS 依赖注入失败（{exc}），请在工程中显式 #include <LittleFS.h>")
+
 base = None
 if platform == "espressif8266":
     base = "esp8266"

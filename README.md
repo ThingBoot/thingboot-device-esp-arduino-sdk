@@ -224,6 +224,8 @@ device.Network.installGSM();       // GSM/4G
 网关类产品（子设备表维护 + 平台消息转发，与传输层无关）：`build_flags` 加 `-DTBD_GATEWAY`，并在 `device.setup()` 前调用 `device.Gateway.install()`（自由函数 `tb_addon_gateway_install()` 的转发版；install 即角色），再用 `device.Gateway.onChildOrder()` 注册子设备命令回调。详见官方文档「网关」章节。
 
 > **ESP8266 1MB Flash 机型注意**：网关 addon 依赖 LittleFS 存储子设备表，1MB 机型将无法支持 OTA，请勿用于需要 OTA 的产品。
+>
+> LittleFS 框架库依赖由 SDK 的 extra_script 在开启 `-DTBD_GATEWAY` 时自动注入（lib_deps），无需在工程中显式 `#include <LittleFS.h>`；若构建日志出现 `LittleFS 依赖注入失败` 警告，请在主源码中显式包含该头文件兜底。
 
 ## 第三方开源软件声明
 

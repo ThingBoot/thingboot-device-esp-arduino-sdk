@@ -12,9 +12,13 @@ uint16_t tb_addon_gateway_install();
 // Child device record (developer-facing)
 struct ThingBootChild {
     uint32_t id = 0;        // 子设备 ID
-    char key[17] = "";      // 子设备键
+    char key[33] = "";      // 子设备键（32 字符+\0）
     uint32_t active = 0;    // 最后活动时间（毫秒，millis 时基）
     bool online = false;    // 在线状态（由 SDK 按离线时限自动判定）
+    char ext_str1[33] = ""; // 自定义字符串 1（如 IP 地址）
+    char ext_str2[33] = ""; // 自定义字符串 2（预留）
+    uint32_t ext_val1 = 0;  // 自定义整型 1（如 Zigbee 短地址）
+    uint32_t ext_val2 = 0;  // 自定义整型 2（预留）
 };
 
 class ThingBootGateway {
@@ -40,6 +44,10 @@ public:
     // 更新子设备活动时间（并置在线）
     // Update a child's active time (and mark it online)
     uint16_t updateChildActive(uint32_t id);
+
+    // 更新子设备扩展字段（str1/str2/val1/val2 全部一并写入并持久化）
+    // Update a child's extension fields (persisted). 20006=not found, 20004=driver missing
+    uint16_t updateChildExt(uint32_t id, const char* str1, const char* str2, uint32_t val1, uint32_t val2);
 
     // 子设备列表：type 为 "all" / "online" / "offline"，返回 ID 数组
     // Child list: type is "all" / "online" / "offline", returns an ID array
@@ -71,6 +79,12 @@ public:
     // is found in the table, this callback hands it to the product's transport;
     // uplink replies go through device.Message.publishMessage(data, id)
     uint16_t onChildOrder(std::function<void(uint32_t, SYS_TOPIC, const char*, const char*)> callback);
+
+    // 子设备配置回调：平台配置消息（config 主题）带 device 键时，网关查表命中后
+    // 由此回调交给产品的传输层发送（参数：子设备 ID、消息 mid、配置内容）
+    // Child config callback: when a platform config message carries a device key,
+    // this callback hands it to the product's transport (id, mid, data)
+    uint16_t onChildConfig(std::function<void(uint32_t, const char*, const char*)> callback);
 };
 
 #endif

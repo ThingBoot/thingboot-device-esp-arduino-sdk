@@ -17,6 +17,7 @@ class ThingBootDeviceImpl;
 #include "ThingBootSDK/Timer.h"
 #include "ThingBootSDK/Peripheral.h"
 #include "ThingBootSDK/Network.h"
+#include "ThingBootSDK/Api.h"
 #include "ThingBootSDK/Gateway.h"
 #ifndef NO_BRIDGE
 #include "ThingBootSDK/Bridge.h"
@@ -31,6 +32,7 @@ class ThingBootDevice {
     friend class ThingBootTimer;
     friend class ThingBootPeripheral;
     friend class ThingBootNetwork;
+    friend class ThingBootApi;
     friend class ThingBootGateway;
 #ifndef NO_BRIDGE
     friend class ThingBootBridge;
@@ -52,6 +54,7 @@ public:
     ThingBootTimer Timer;
     ThingBootPeripheral Peripheral;
     ThingBootNetwork Network;
+    ThingBootApi Api;
     ThingBootGateway Gateway;
 #ifndef NO_BRIDGE
     ThingBootBridge Bridge;
