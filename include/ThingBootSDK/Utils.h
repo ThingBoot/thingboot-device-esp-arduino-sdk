@@ -9,9 +9,21 @@
 inline String CS(JSONVar var)
 {
     String t = JSON.typeof(var);
-    if (t == "null")        return "";
-    if (t == "boolean")     return var ? "1" : "0";
-    if (t == "string")      return (const char*)var;
+    if (t == "null")
+    {
+        return "";
+    }
+
+    if (t == "boolean")
+    {
+        return var ? "1" : "0";
+    }
+
+    if (t == "string")
+    {
+        return (const char*)var;
+    }
+
     return JSON.stringify(var);
 }
 
@@ -83,6 +95,7 @@ inline String str_repeat(String str, uint8_t times)
     {
         result += str;
     }
+
     return result;
 }
 
@@ -150,17 +163,27 @@ inline String str_find(String str, String begin, String end)
 // Check whether string ends with the specified suffix
 inline bool str_ends_with(const char* str, const char* suffix)
 {
-    if (str == NULL || suffix == NULL) return false;
+    if (str == NULL || suffix == NULL)
+    {
+        return false;
+    }
 
     size_t str_len = strlen(str);
     size_t suffix_len = strlen(suffix);
 
-    if (str_len < suffix_len) return false;
+    if (str_len < suffix_len)
+    {
+        return false;
+    }
 
     const char* p = str + str_len - suffix_len;
     while (*suffix != '\0')
     {
-        if (*p != *suffix) return false;
+        if (*p != *suffix)
+        {
+            return false;
+        }
+
         p++;
         suffix++;
     }
@@ -276,8 +299,16 @@ inline String md5(String data, uint8_t len = 32)
 // Array destinations get automatic bounds; pointer destinations must pass dest_size.
 inline void _str_copy_impl(char* dest, size_t dest_size, const char* src)
 {
-    if (dest == nullptr || dest_size == 0) return;
-    if (src == nullptr) { dest[0] = '\0'; return; }
+    if (dest == nullptr || dest_size == 0)
+    {
+        return;
+    }
+
+    if (src == nullptr)
+    {
+        dest[0] = '\0'; return;
+    }
+
     snprintf(dest, dest_size, "%s", src);
 }
 
@@ -296,18 +327,43 @@ template<size_t N>
 inline void str_copy(char (&dest)[N], JSONVar src)
 {
     String t = JSON.typeof(src);
-    if (t == "null")         _str_copy_impl(dest, N, "");
-    else if (t == "boolean") _str_copy_impl(dest, N, src ? "1" : "0");
-    else if (t == "string")  _str_copy_impl(dest, N, (const char*)src);
-    else                     _str_copy_impl(dest, N, JSON.stringify(src).c_str());
+    if (t == "null")
+    {
+        _str_copy_impl(dest, N, "");
+    }
+    else if (t == "boolean")
+    {
+        _str_copy_impl(dest, N, src ? "1" : "0");
+    }
+    else if (t == "string")
+    {
+        _str_copy_impl(dest, N, (const char*)src);
+    }
+    else
+    {
+        _str_copy_impl(dest, N, JSON.stringify(src).c_str());
+    }
 }
+
 inline void str_copy(char* dest, size_t dest_size, JSONVar src)
 {
     String t = JSON.typeof(src);
-    if (t == "null")         _str_copy_impl(dest, dest_size, "");
-    else if (t == "boolean") _str_copy_impl(dest, dest_size, src ? "1" : "0");
-    else if (t == "string")  _str_copy_impl(dest, dest_size, (const char*)src);
-    else                     _str_copy_impl(dest, dest_size, JSON.stringify(src).c_str());
+    if (t == "null")
+    {
+        _str_copy_impl(dest, dest_size, "");
+    }
+    else if (t == "boolean")
+    {
+        _str_copy_impl(dest, dest_size, src ? "1" : "0");
+    }
+    else if (t == "string")
+    {
+        _str_copy_impl(dest, dest_size, (const char*)src);
+    }
+    else
+    {
+        _str_copy_impl(dest, dest_size, JSON.stringify(src).c_str());
+    }
 }
 
 // URL 编码（percent-encode 非 unreserved 字符）
@@ -320,9 +376,16 @@ inline String url_encode(String s)
     char hex[4];
     for (uint8_t c : s)
     {
-        if (strchr(unreserved, c)) out += (char)c;
-        else { snprintf(hex, sizeof(hex), "%%%02X", c); out += hex; }
+        if (strchr(unreserved, c))
+        {
+            out += (char)c;
+        }
+        else
+        {
+            snprintf(hex, sizeof(hex), "%%%02X", c); out += hex;
+        }
     }
+
     return out;
 }
 

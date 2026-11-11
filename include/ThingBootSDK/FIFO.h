@@ -22,7 +22,10 @@ public:
     explicit TbFIFO(size_t max_len)
         : max(max_len), buf(static_cast<T*>(malloc(sizeof(T) * max_len))),
           head(0), tail(0), count(0) {
-        if (!buf) while (1); // 内存不足，可自行改抛异常
+        if (!buf)
+        {
+            while (1);
+        } // 内存不足，可自行改抛异常
     }
 
     /* 析构：释放一次性申请的缓冲区 */
@@ -30,7 +33,11 @@ public:
 
     /* 压入：满返回 false */
     bool push(const T& item) {
-        if (count == max) return false;
+        if (count == max)
+        {
+            return false;
+        }
+
         buf[head] = item;
         head = (head + 1) % max;
         ++count;
@@ -39,7 +46,11 @@ public:
 
     /* 弹出：空返回 false */
     bool pop(T& out) {
-        if (count == 0) return false;
+        if (count == 0)
+        {
+            return false;
+        }
+
         out = buf[tail];
         tail = (tail + 1) % max;
         --count;

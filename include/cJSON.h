@@ -301,6 +301,7 @@ CJSON_PUBLIC(void) cJSON_free(void *object);
 
 #ifdef __cplusplus
 }
+
 #endif
 
 #endif

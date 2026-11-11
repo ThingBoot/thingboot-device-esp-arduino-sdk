@@ -72,7 +72,10 @@ void setup()
 
 	//设备按钮
 	device.Peripheral.setDeviceBtn(1, 13, false, [](uint8_t num, BTN_OPER oper, uint16_t keep) {
-		if (oper != BTN_UP) return;
+		if (oper != BTN_UP)
+		{
+			return;
+		}
 
 		JSONVar state;
 

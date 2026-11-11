@@ -38,7 +38,8 @@
 #include <Ticker.h>
 
 #define THINGBOOT_SDK_NAME "esp-arduino"
-#define THINGBOOT_SDK_VERSION "1.13.0"
+#define THINGBOOT_SDK_VERSION "1.13.1"
+#define THINGBOOT_SDK_INTERNAL ""
 
 #include <ThingBootSDK/Enums.h>
 #include <ThingBootSDK/Errors.h>

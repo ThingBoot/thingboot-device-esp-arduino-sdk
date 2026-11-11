@@ -49,6 +49,7 @@ void relay_state(uint8_t num, bool state)
                 bl_reset_alert();
             }
         }
+
         #endif
     }
     
@@ -143,7 +144,10 @@ void relay_handle()
 {
     for (uint8_t i = 0; i < sizeof(RELAY) / sizeof(RELAY[0]); i++)
 	{
-        if (!RELAY[i].init) continue;
+        if (!RELAY[i].init)
+        {
+            continue;
+        }
 
         //有动作
         if (RELAY[i].interval > 0 && RELAY[i].timer > 0 && device.millElapsed(RELAY[i].timer) >= RELAY[i].interval)
@@ -154,7 +158,11 @@ void relay_handle()
             RELAY[i].timer = 0;
             
             //结束动作
-            if (RELAY[i].callback) RELAY[i].callback(i + 1, RELAY[i].state, RELAY[i].mid);
+            if (RELAY[i].callback)
+            {
+                RELAY[i].callback(i + 1, RELAY[i].state, RELAY[i].mid);
+            }
+
             RELAY[i].callback = NULL;
         }
 
@@ -181,7 +189,10 @@ void relay_setup()
     for (uint8_t i = 0; i < sizeof(RELAY) / sizeof(RELAY[0]); i++)
 	{
         pinMode(RELAY[i].pin1, OUTPUT);
-        if (RELAY[i].pin2) pinMode(RELAY[i].pin2, OUTPUT);
+        if (RELAY[i].pin2)
+        {
+            pinMode(RELAY[i].pin2, OUTPUT);
+        }
 
         relay_state(i + 1, device.Config.readConfig("relay", "0") == "1");
 
