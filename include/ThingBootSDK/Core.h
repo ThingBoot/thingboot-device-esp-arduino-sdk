@@ -101,16 +101,11 @@ uint16_t onSystemProgress(
 uint16_t onDebug(
     std::function<void(const char* category, const char* message)> callback);
 
-// 注册代码包 OTA 回调
-// OTA 命令带 type 字段（如 "python"/"lua"，产品自定义扩展）时触发：
-// SDK 不做固件语义处理（不断开 MQTT、不做魔数预检、不重启），完整消息原文
-// 透传给产品侧自行下载/安装/回报进度；返回 ERR_OK 表示受理，进度与结果回报
-// 全部由产品侧通过自己的通道完成。
-// 不带 type 的固件 OTA 也会触发本回调（type 为 "firmware"），但升级工作已由
-// SDK 全部完成，回调仅作通知，产品侧无需做升级处理。
-// Register callback for package OTA (triggered when OTA command carries a "type" field)
+// 注册 OTA 状态回调。data 包含 state：begin=开始；progress=进行中（progress 为 0~100）；
+// success=成功；failure=失败（error 为错误码，平台 JSON 错误保存在 response 中）。
+// Register OTA state callback; JSON error responses are preserved in data.response.
 uint16_t onOTA(
-    std::function<uint16_t(const char* type, const char* content)> callback);
+    std::function<uint16_t(JSONVar data)> callback);
 
 // 系统初始化
 // Initialize system
