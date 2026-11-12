@@ -26,7 +26,6 @@ public:
 
     // 上报事件
     // Report event
-    bool reportEvent(const char* name, const char* data);
     bool reportEvent(const char* name, JSONVar data);
 };
 

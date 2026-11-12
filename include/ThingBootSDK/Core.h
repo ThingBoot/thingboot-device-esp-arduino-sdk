@@ -2,9 +2,9 @@
 // Get SDK version string
 String getVersion();
 
-// 获取系统信息（JSON 字符串）
-// Get system information as JSON string
-String getSystemInfo();
+// 获取系统信息
+// Get system information
+JSONVar getSystemInfo();
 
 // 获取设备 ID
 // Get device ID

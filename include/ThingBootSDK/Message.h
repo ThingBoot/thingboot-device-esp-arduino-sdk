@@ -16,11 +16,11 @@ public:
     // internals, for the mid parameter of publishMessage and message correlation
     String mid();
 
-    // 向平台发布消息
+    // 向平台发布消息；data 为 undefined 时省略 data 字段，null 时显式发送 null
     // Publish message to platform
-    bool publishMessage(SYS_TOPIC topic, String mid, String data, uint32_t device = 0);
-    bool publishMessage(SYS_TOPIC topic, String data, uint32_t device);
-    bool publishMessage(SYS_TOPIC topic, String data);
+    bool publishMessage(SYS_TOPIC topic, String mid, JSONVar data, uint32_t device = 0);
+    bool publishMessage(SYS_TOPIC topic, JSONVar data, uint32_t device);
+    bool publishMessage(SYS_TOPIC topic, JSONVar data);
 };
 
 #endif

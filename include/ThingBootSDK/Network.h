@@ -21,9 +21,9 @@ public:
     uint16_t installEthernet() { return tb_addon_net_ether_install(); }
     uint16_t installGSM() { return tb_addon_net_gsm_install(); }
 
-    // 获取当前网络信息（JSON 字符串）
-    // Get current network information as JSON string
-    String getNetworkInfo();
+    // 获取当前网络信息
+    // Get current network information
+    JSONVar getNetworkInfo();
 
     // 网络变化回调（主循环上下文触发）
     // event：NETWORK_EVENT_OFFLINE 网络断开 / NETWORK_EVENT_ONLINE 网络就绪 /
@@ -44,7 +44,7 @@ public:
     bool updateWiFiConfig(const char* ssid, const char* psk);
     bool deleteWiFiConfig(const char* ssid);
     bool deleteWiFiConfig(uint8_t pos);
-    String getWiFiConfig();
+    JSONVar getWiFiConfig();
 
     // ---- 以太网（需链接 addon_net_ether 并调用 tb_addon_net_ether_install()；
     // 未注册驱动时方法为空操作/返回空串/false）----

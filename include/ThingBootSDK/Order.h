@@ -16,9 +16,9 @@ public:
     // pass the same mid to replyMessage so the platform can correlate the reply)
     uint16_t onOrder(std::function<void(const char*, JSONVar)> order_callback);
 
-    // 命令应答（mid 为收到的命令消息 ID）
+    // 命令应答（mid 为收到的命令消息 ID）；data 为 undefined 时省略 data 字段
     // Reply to order (mid is the message ID of the received order)
-    bool replyMessage(const char* mid, const char* data);
+    bool replyMessage(const char* mid, JSONVar data);
 };
 
 #endif

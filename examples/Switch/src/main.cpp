@@ -27,7 +27,7 @@ void order(const char* mid, JSONVar data)
 		ret["power"] = relay_state(1) ? "1" : "0";
 	}
 
-	device.Message.publishMessage(TOPIC_ORDER, mid, C(ret));
+	device.Message.publishMessage(TOPIC_ORDER, mid, ret);
 }
 
 void setup()

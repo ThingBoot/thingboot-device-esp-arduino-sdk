@@ -19,7 +19,7 @@ public:
 
     // 立即上报某个状态
     // Report state immediately
-    bool reportState(const char* name, const char* data);
+    bool reportState(const char* name, JSONVar data);
 
     // 注册设备状态获取回调
     // 设备每次 MQTT 上线后，SDK 会通过该回调获取外设当前属性状态并上报平台

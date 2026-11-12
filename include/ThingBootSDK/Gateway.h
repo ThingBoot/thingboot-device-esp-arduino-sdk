@@ -78,13 +78,13 @@ public:
     // Child order callback: when a platform order carries a device key and the child
     // is found in the table, this callback hands it to the product's transport;
     // uplink replies go through device.Message.publishMessage(data, id)
-    uint16_t onChildOrder(std::function<void(uint32_t, SYS_TOPIC, const char*, const char*)> callback);
+    uint16_t onChildOrder(std::function<void(uint32_t, SYS_TOPIC, const char*, JSONVar)> callback);
 
     // 子设备配置回调：平台配置消息（config 主题）带 device 键时，网关查表命中后
     // 由此回调交给产品的传输层发送（参数：子设备 ID、消息 mid、配置内容）
     // Child config callback: when a platform config message carries a device key,
     // this callback hands it to the product's transport (id, mid, data)
-    uint16_t onChildConfig(std::function<void(uint32_t, const char*, const char*)> callback);
+    uint16_t onChildConfig(std::function<void(uint32_t, const char*, JSONVar)> callback);
 };
 
 #endif
