@@ -86,6 +86,10 @@ public:
     // Set the GSM serial port (SoftwareSerial or HardwareSerial).
     // The caller must call begin() on the serial port before using GSM.
     void setGSMSerialPort(Stream* serial, uint32_t baud = 0);
+
+    // 设置 GSM 使能引脚（低电平有效，-1 表示不控制模组电源，需在 setup 前设置）
+    // Set the GSM enable pin (active low; -1 disables power control)
+    void setGSMEnablePin(int8_t pin);
 };
 
 #endif
