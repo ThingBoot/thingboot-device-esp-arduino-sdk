@@ -21,7 +21,7 @@
 
 ## 特性
 
-- **全栈网络接入**：内置 WiFi、以太网、4G Cat.1 及 WiFi Mesh 组网
+- **全栈网络接入**：内置 WiFi、以太网、4G Cat.1，并支持按需启用 BLE 主从组网
 - **平台直连**：开箱即用的 MQTT/HTTPS 平台连接，支持自动重连与 OTA 升级
 - **局域网服务**：纯局域网模式下开放 HTTP/TCP 接口，支持无网本地控制
 - **硬件极简**：开发者仅需编写 LED、继电器、传感器等硬件驱动，平台端定义物模型即可完成功能闭环
@@ -39,7 +39,7 @@
 
 - **WiFi**：base 库内置，开箱即用（ESP8266 / ESP32 全系）
 - **以太网 / GSM**：addon 按需启用（W5500 SPI 以太网、ML307 4G Cat.1）
-- **WiFi Mesh 组网**：ESP-NOW 主从 / 网关、发现绑定（find/bind）、消息桥接、信道管理
+- **BLE 主从组网**：addon 按需启用，支持主从 / 网关、发现绑定（find/bind）、邻接消息转发，无需 WiFi 信道对齐
 
 ### 平台连接
 
@@ -62,7 +62,7 @@
 
 ### 开发体验
 
-- **addon 模型**：base 库必链 + addon 按需追加（ether / gsm / gateway），`install()` 即启用
+- **addon 模型**：base 库必链 + addon 按需追加（ether / gsm / ble / gateway），`install()` 即启用
 - **调试日志**：全库恒带，`device.onDebug()` 注册即输出，按模块分类过滤，无需编译开关
 - **外设框架**：按钮消抖 / 长按系统菜单（5s 配网 / 7s 安全模式）、LED 三态状态机
 - **配置体系**：Config 声明式配置项（默认值 / 范围校验 / 配网与平台可读写）
@@ -203,19 +203,21 @@ lib/thingboot-device-esp-arduino-sdk/
 
 ## 联网扩展（addon）
 
-v1.3 起联网模块改为 addon 模型：base 库内含 WiFi 与全部平台能力，以太网 / GSM 为独立 addon 库，按需启用。两步：
+联网与 Mesh 扩展采用 addon 模型：base 库内含 WiFi 与平台能力，以太网 / GSM / BLE 为独立 addon 库，按需启用。两步：
 
 1. 在 `platformio.ini` 的 `build_flags` 打开开关，`extra_script.py` 会追加链接对应 addon 库：
    - `-DTBD_ETHER` → `libthingboot_addon_net_ether_<芯片>.a`（以太网 W5500）
    - `-DTBD_GSM` → `libthingboot_addon_net_gsm_<芯片>.a`（4G Cat.1 ML307）
+   - `-DTBD_BLE` → `libthingboot_addon_net_ble_<芯片>.a`（BLE 主从与邻接转发）
 2. 在代码中 `device.setup()` 之前调用安装函数注册驱动（成员写法为自由函数 `tb_addon_net_*_install()` 的转发版，等价）：
 
 ```cpp
 device.Network.installEthernet();  // 以太网
 device.Network.installGSM();       // GSM/4G
+device.Network.installBLE();       // BLE 主从组网
 ```
 
-未安装驱动时调用相关 `Network` 接口返回 `ERR_NETWORK_DRIVER_MISSING`（20002）。两个 addon 可同时启用。
+未安装驱动时调用相关 `Network` 接口返回 `ERR_NETWORK_DRIVER_MISSING`（20002）。多个 addon 可同时启用。BLE 仅支持 ESP32、ESP32-S3、ESP32-C3、ESP32-C6，不支持 ESP8266 和 ESP32-S2。
 
 > `TBD_DEBUG` 已废弃：v1.3 起调试日志恒带于库中，注册 `device.onDebug` 回调即可输出，无需任何编译宏。
 

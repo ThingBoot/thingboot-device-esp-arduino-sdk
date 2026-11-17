@@ -20,7 +20,7 @@
 
 ## Features
 
-- **Full-Stack Network Access**: Built-in WiFi, Ethernet, 4G Cat.1, and WiFi Mesh networking.
+- **Full-Stack Network Access**: Built-in WiFi, Ethernet and 4G Cat.1, with optional BLE master/slave networking.
 - **Cloud-Ready**: Out-of-the-box MQTT/HTTPS connection to the ThingBoot platform with auto-reconnect and OTA upgrades.
 - **Local Network Service**: Pure LAN mode with HTTP/TCP endpoints for offline local control.
 - **Hardware Minimalism**: Developers only write peripheral drivers (LED, relay, sensor, etc.); platform-side thing models close the feature loop.
@@ -38,7 +38,7 @@
 
 - **WiFi**: built into the base library, works out of the box (ESP8266 / all ESP32 variants)
 - **Ethernet / GSM**: on-demand addons (W5500 SPI Ethernet, ML307 4G Cat.1)
-- **WiFi Mesh**: ESP-NOW master/slave, gateway, discovery & binding (find/bind), message bridging, channel management
+- **BLE master/slave networking**: optional addon with gateway support, discovery & binding (find/bind), and neighbor forwarding without WiFi channel coupling
 
 ### Platform Connection
 
@@ -61,7 +61,7 @@
 
 ### Developer Experience
 
-- **Addon model**: base library always linked + addons on demand (ether / gsm / gateway) — `install()` and go
+- **Addon model**: base library always linked + addons on demand (ether / gsm / ble / gateway) — `install()` and go
 - **Debug logs**: always compiled in; register `device.onDebug()` to receive category-tagged logs, no build flags
 - **Peripheral framework**: button debounce / long-press system menu (5 s provisioning, 7 s safe mode), three-state LED machine
 - **Config system**: declarative config items (defaults / range checks / readable & writable via provisioning and platform)
@@ -202,19 +202,21 @@ lib/thingboot-device-esp-arduino-sdk/
 
 ## Connectivity Addons
 
-Since v1.3, connectivity modules use an addon model: the base library includes WiFi and all platform capabilities; Ethernet / GSM ship as separate addon libraries, enabled on demand. Two steps:
+Connectivity and Mesh extensions use an addon model: the base library includes WiFi and platform capabilities; Ethernet / GSM / BLE ship as separate addon libraries, enabled on demand. Two steps:
 
 1. Add the switch to `build_flags` in `platformio.ini` — `extra_script.py` will link the matching addon library:
    - `-DTBD_ETHER` → `libthingboot_addon_net_ether_<chip>.a` (Ethernet, W5500)
    - `-DTBD_GSM` → `libthingboot_addon_net_gsm_<chip>.a` (4G Cat.1 ML307)
+   - `-DTBD_BLE` → `libthingboot_addon_net_ble_<chip>.a` (BLE master/slave links and neighbor forwarding)
 2. Call the install function in your code before `device.setup()` to register the driver (member-style calls are equivalent wrappers of the free functions `tb_addon_net_*_install()`):
 
 ```cpp
 device.Network.installEthernet();  // Ethernet
 device.Network.installGSM();       // GSM/4G
+device.Network.installBLE();       // BLE master/slave networking
 ```
 
-Calling the related `Network` APIs without an installed driver returns `ERR_NETWORK_DRIVER_MISSING` (20002). Both addons can be enabled together.
+Calling the related `Network` APIs without an installed driver returns `ERR_NETWORK_DRIVER_MISSING` (20002). Multiple addons can be enabled together. BLE is available on ESP32, ESP32-S3, ESP32-C3 and ESP32-C6, not on ESP8266 or ESP32-S2.
 
 > `TBD_DEBUG` is deprecated: since v1.3 debug logs are always compiled in; register a `device.onDebug` callback to receive them — no build flag needed.
 

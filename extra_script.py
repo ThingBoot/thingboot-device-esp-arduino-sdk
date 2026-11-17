@@ -20,6 +20,7 @@ build_flags_lower = build_flags_str.lower()
 has_debug = "-dtbd_debug" in build_flags_lower or "-d tbd_debug" in build_flags_lower
 has_ether = "-dtbd_ether" in build_flags_lower or "-d tbd_ether" in build_flags_lower
 has_gsm   = "-dtbd_gsm"   in build_flags_lower or "-d tbd_gsm"   in build_flags_lower
+has_ble = "-dtbd_ble" in build_flags_lower or "-d tbd_ble" in build_flags_lower
 has_gateway = "-dtbd_gateway" in build_flags_lower or "-d tbd_gateway" in build_flags_lower
 
 if has_debug:
@@ -107,6 +108,11 @@ if base:
             addon_libs.append(f"libthingboot_addon_net_ether_{base}.a")
         if has_gsm:
             addon_libs.append(f"libthingboot_addon_net_gsm_{base}.a")
+        if has_ble:
+            if base in ("esp8266", "esp32s2"):
+                print(f"[thingboot_device] WARNING: {base} 无 BLE 硬件，忽略 TBD_BLE")
+            else:
+                addon_libs.append(f"libthingboot_addon_net_ble_{base}.a")
         if has_gateway:
             addon_libs.append(f"libthingboot_addon_gateway_{base}.a")
 

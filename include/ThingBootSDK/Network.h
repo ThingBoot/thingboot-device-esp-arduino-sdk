@@ -8,6 +8,7 @@ class ThingBootDevice;
 // 也可经成员转发版 Network.installEthernet()/installGSM() 调用（等价）
 uint16_t tb_addon_net_ether_install();
 uint16_t tb_addon_net_gsm_install();
+uint16_t tb_addon_net_ble_install();
 
 class ThingBootNetwork {
 private:
@@ -20,6 +21,7 @@ public:
     // 供编辑器提示发现；未链接对应 addon 库时不要调用）
     uint16_t installEthernet() { return tb_addon_net_ether_install(); }
     uint16_t installGSM() { return tb_addon_net_gsm_install(); }
+    uint16_t installBLE() { return tb_addon_net_ble_install(); }
 
     // 获取当前网络信息
     // Get current network information
