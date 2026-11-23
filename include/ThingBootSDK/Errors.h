@@ -25,6 +25,7 @@
  * ============================================================ */
 #define ERR_SYSTEM_OK                       0
 #define ERR_SYSTEM_VALUE_NULL               10011
+#define ERR_SYSTEM_DEVICE_NOT_ACTIVATED     10012
 
 /* ============================================================
  *  初始化设置（11xxx）

@@ -31,7 +31,7 @@
 ### Connectivity & Provisioning
 
 - **WiFi**: multi-candidate connection (5 candidates + hidden APs), automatic reconnect, zombie-AP (connected but no Internet) detection and failover
-- **AP provisioning**: automatic `TBC-<deviceID>` hotspot + HTTP config API when unconfigured — connect a phone and go
+- **AP provisioning**: configuration mode (no device ID / no bench + boot connection failure / forced config mode) automatically opens a `TBC-<deviceID>` hotspot + HTTP config API — connect a phone and go; never opens again once a bench is saved, and runtime network loss never reopens it
 - **Engineering hotspots**: automatic recognition of safe / factory / test / debug / config hotspots — factory activation, production testing and debugging with zero code
 
 ### Network Modes
@@ -217,6 +217,54 @@ device.Network.installBLE();       // BLE master/slave networking
 ```
 
 Calling the related `Network` APIs without an installed driver returns `ERR_NETWORK_DRIVER_MISSING` (20002). Multiple addons can be enabled together. BLE is available on ESP32, ESP32-S3, ESP32-C3 and ESP32-C6, not on ESP8266 or ESP32-S2.
+
+## BLE Local Configuration (addon)
+
+With `-DTBD_BLE` and `device.Network.installBLE()`, the BLE host provides both the Mesh neighbor link and an open local configuration channel. The BLE configuration channel and the AP configuration hotspot together form the **configuration mode** — they open and close together with the same lifecycle. Configuration mode opens when any of these holds: forced configuration mode (`SYS_MODE_CONFIG`); no device ID (`device ID = 0`, a continuous condition); or no bench saved and the boot-time network connection failed (evaluated once at boot, cleared once online or once a bench is saved — runtime network loss never opens it). A device that has saved a bench never opens the configuration hotspot. Its advertised name is `TBC-<deviceID>` (C=Config; falls back to `TBC-<last 3 MAC bytes>` when no device ID exists), while the Mesh name is `TBD-<deviceID>` (D=Device). Mesh peer recognition does not depend on the advertised name — it uses the service UUID + manufacturer data.
+
+### GATT Service
+
+| Purpose | UUID |
+|---|---|
+| Configuration service | `00004643-0000-1000-8000-00805f9b34fb` |
+| Device information (read) | `00004649-0000-1000-8000-00805f9b34fb` |
+| Command (write) | `00004d43-0000-1000-8000-00805f9b34fb` |
+| Request body (write) | `00005444-0000-1000-8000-00805f9b34fb` |
+| Status and responses (notify) | `00005453-0000-1000-8000-00805f9b34fb` |
+
+The device prefers MTU 512. Clients must still fragment according to the negotiated ATT MTU-3 and must not assume large writes are available.
+
+### Request Flow
+
+1. Read the information characteristic to obtain the protocol version, MAC, activation state and configuration state.
+2. Subscribe to the status characteristic.
+3. Write a complete UTF-8 JSON command header to the command characteristic:
+
+```json
+{"v":1,"mid":"a1b2c3d4","method":"POST","action":"wifi","len":38}
+```
+
+4. Write the request body as a raw JSON byte stream to the data characteristic, fragmented by MTU. `len` is the complete body length. A GET request uses `len=0` and does not write the data characteristic.
+5. Read the response stream from notifications. The stream is one JSON header line, `\n`, then `len` bytes of raw response body. Example header:
+
+```json
+{"v":1,"mid":"a1b2c3d4","code":200,"msg":"ok","len":2}
+```
+
+Asynchronous status events use the same stream format, with `event/status/state` in the header and a status JSON body.
+
+### Actions
+
+BLE and AP HTTP provisioning share the same local configuration logic:
+
+- `info`: device, MAC, WiFi, IP, workbench and configuration state
+- `wifi`: GET current network; POST `{"ssid":"...","psk":"..."}` to save and connect
+- `network` / `mode` / `device`: read/write product config mappings
+- Empty action: GET `id/key/secret/bench/gateway/network/timezone` (same behavior as the AP hotspot); POST master/gateway/bench/timezone
+- `ether`: query or connect Ethernet
+- `restart`: delayed restart
+
+A non-zero `master/gateway` cannot be assigned before activation; the public APIs return `ERR_SYSTEM_DEVICE_NOT_ACTIVATED` (10012). The configuration channel has nothing to do with access codes: an access code is a developer R&D quota credential that can only be set at firmware build time via `setActiveCode()` — no external write path exists. Production devices activate automatically via the reg flow (MAC lookup) once online; clients simply observe `status` events (`idle`/`activating`/`activated`) for the result.
 
 > `TBD_DEBUG` is deprecated: since v1.3 debug logs are always compiled in; register a `device.onDebug` callback to receive them — no build flag needed.
 

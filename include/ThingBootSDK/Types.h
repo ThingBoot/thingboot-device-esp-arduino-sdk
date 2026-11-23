@@ -25,6 +25,11 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #endif
+
+#if !defined(ESP32) || defined(CONFIG_IDF_TARGET_ESP32S2)
+#define NO_MESH
+#endif
+
 // Ethernet.h 不再由公共头引入：以太网实现已迁入 addon（common/net_ether.h 自行包含）
 #include <ArduinoHttpClient.h>
 #include <PubSubClient.h>
@@ -38,7 +43,7 @@
 #include <Ticker.h>
 
 #define THINGBOOT_SDK_NAME "esp-arduino"
-#define THINGBOOT_SDK_VERSION "1.15.1"
+#define THINGBOOT_SDK_VERSION "1.16.0"
 #define THINGBOOT_SDK_INTERNAL ""
 
 #include <ThingBootSDK/Enums.h>

@@ -32,7 +32,7 @@
 ### 接入与配网
 
 - **WiFi 联网**：多候选连接（5 个候选 + 隐藏热点）、断线自动重连、僵尸热点（能连但无外网）识别与换网
-- **AP 配网**：未配置时自动开放 `TBC-<设备ID>` 热点 + HTTP 配置接口，手机直连即配
+- **AP 配网**：配置模式（无设备 ID / 无 bench 且开机联网失败 / 强制配置模式）自动开放 `TBC-<设备ID>` 热点 + HTTP 配置接口，手机直连即配；保存 bench 后永不开放，运行中断网不再开启
 - **工程热点**：safe / factory / test / debug / config 五类工程热点自动识别——工厂激活、产线测试、开发调试零代码接入
 
 ### 网络形态
@@ -218,6 +218,58 @@ device.Network.installBLE();       // BLE 主从组网
 ```
 
 未安装驱动时调用相关 `Network` 接口返回 `ERR_NETWORK_DRIVER_MISSING`（20002）。多个 addon 可同时启用。BLE 仅支持 ESP32、ESP32-S3、ESP32-C3、ESP32-C6，不支持 ESP8266 和 ESP32-S2。
+
+## BLE 本地配置（addon）
+
+启用 `-DTBD_BLE` 并调用 `device.Network.installBLE()` 后，BLE Host 同时提供 Mesh 邻接链路和开放的本地配置通道。BLE 配置通道与 AP 配置热点同属**配置模式**，同开同关、生命周期一致。配置模式开启条件（任一成立）：强制配置模式（`SYS_MODE_CONFIG`）；设备无 ID（`device ID = 0`，持续条件）；无 bench 且开机联网失败（仅开机判定一次，联网或保存 bench 后失效，运行中绝不因断网开启）。设备保存 bench 后永不开放配置热点。配置广播名为 `TBC-<设备ID>`（C=Config；无设备 ID 的边缘场景回退 `TBC-<MAC 后 3 段>`），Mesh 广播名为 `TBD-<设备ID>`（D=Device）。Mesh 互认不依赖广播名，由服务 UUID + manufacturer data 识别。
+
+### GATT 服务
+
+| 用途 | UUID |
+|---|---|
+| 配置服务 | `00004643-0000-1000-8000-00805f9b34fb` |
+| 设备信息（read） | `00004649-0000-1000-8000-00805f9b34fb` |
+| 命令（write） | `00004d43-0000-1000-8000-00805f9b34fb` |
+| 请求正文（write） | `00005444-0000-1000-8000-00805f9b34fb` |
+| 状态与应答（notify） | `00005453-0000-1000-8000-00805f9b34fb` |
+
+设备优先协商 MTU 512；客户端仍必须按当前 ATT MTU-3 分包，不得假设手机端一定支持大包。
+
+### 请求流程
+
+1. 读取信息特征，确认协议版本、MAC、激活状态和配置状态。
+2. 订阅状态特征。
+3. 向命令特征写入命令头（UTF-8 JSON，单次完整写入）：
+
+```json
+{"v":1,"mid":"a1b2c3d4","method":"POST","action":"wifi","len":38}
+```
+
+4. 将请求正文作为原始 JSON 字节流写入数据特征，按 MTU 分包；`len` 是全部正文字节数。GET 请求 `len=0`，不写数据特征。
+5. 从通知特征接收应答流。流格式为：一行应答头 JSON + `\n` + `len` 字节原始响应正文。响应头示例：
+
+```json
+{"v":1,"mid":"a1b2c3d4","code":200,"msg":"ok","len":2}
+```
+
+异步状态事件使用同一流格式，头部含 `event/status/state`，正文为状态 JSON：
+
+```json
+{"v":1,"event":"status","state":"activated","len":31}
+```
+
+### action
+
+BLE 与 AP HTTP 配网共用同一套本地配置逻辑：
+
+- `info`：查询设备、MAC、WiFi、IP、工作台和配置状态
+- `wifi`：GET 查询当前网络；POST `{"ssid":"...","psk":"..."}` 保存并连接
+- `network` / `mode` / `device`：读写产品配置映射
+- 空 action：GET 读取 `id/key/secret/bench/gateway/network/timezone`（与 AP 热点行为一致）；POST 写 master/gateway/bench/timezone
+- `ether`：查询或连接以太网
+- `restart`：延时重启
+
+未激活设备不允许写入非零 `master/gateway`，公开接口返回 `ERR_SYSTEM_DEVICE_NOT_ACTIVATED`（10012）。配置通道与接入码无关：接入码是开发者研发配额凭证，只能在固件编译期经 `setActiveCode()` 设置，不开放任何外部写入入口；量产设备联网后由 reg 流程按 MAC 自动激活，客户端观察 `status` 事件（`idle`/`activating`/`activated`）即可获知激活结果。
 
 > `TBD_DEBUG` 已废弃：v1.3 起调试日志恒带于库中，注册 `device.onDebug` 回调即可输出，无需任何编译宏。
 

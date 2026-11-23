@@ -22,16 +22,16 @@ uint16_t setBenchID(uint16_t benchID);
 // Get master device ID
 uint32_t getMasterID();
 
-// 设置主设备 ID
-// Set master device ID
+// 设置主设备 ID（设备激活后允许；未激活返回 ERR_SYSTEM_DEVICE_NOT_ACTIVATED）
+// Set master device ID (activation required; otherwise returns ERR_SYSTEM_DEVICE_NOT_ACTIVATED)
 uint16_t setMasterID(uint32_t masterDeviceID);
 
 // 获取网关设备 ID
 // Get gateway device ID
 uint32_t getGatewayID();
 
-// 设置网关设备 ID
-// Set gateway device ID
+// 设置网关设备 ID（设备激活后允许；未激活返回 ERR_SYSTEM_DEVICE_NOT_ACTIVATED）
+// Set gateway device ID (activation required; otherwise returns ERR_SYSTEM_DEVICE_NOT_ACTIVATED)
 uint16_t setGatewayID(uint32_t gatewayDeviceID);
 
 // 获取时区
