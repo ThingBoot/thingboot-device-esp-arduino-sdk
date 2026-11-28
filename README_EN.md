@@ -270,7 +270,7 @@ A non-zero `master/gateway` cannot be assigned before activation; the public API
 
 ## Gateway Addon
 
-For gateway products (child device table maintenance + platform message forwarding, transport-agnostic): add `-DTBD_GATEWAY` to `build_flags` and call `device.Gateway.install()` before `device.setup()` (a wrapper of the free function `tb_addon_gateway_install()`; install declares the role), then register the child order callback via `device.Gateway.onChildOrder()`. See the "Gateway" chapter of the official documentation.
+For gateway products (child device table maintenance + platform message forwarding, transport-agnostic): add `-DTBD_GATEWAY` to `build_flags` and call `device.Gateway.install(maxChildren)` before `device.setup()` to explicitly set the maximum number of child devices for the product (a wrapper of `tb_addon_gateway_install(maxChildren)`; install declares the role and allocates the table for that capacity), then register the child order callback via `device.Gateway.onChildOrder()`. See the "Gateway" chapter of the official documentation.
 
 > **ESP8266 with 1MB flash**: the gateway addon stores the child table in LittleFS — OTA will not be possible on 1MB parts. Do not use it on products that need OTA.
 

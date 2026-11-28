@@ -17,11 +17,13 @@ public:
     // 添加设备配置项
     // pos 传 TB_CONFIG_AUTO（缺省）时由 SDK 托管存储，无需指定位置和长度：
     //   ESP-IDF 版：值存原生 NVS（name ≤15 字符）；此时 length 语义为最大长度（0=默认 64）
-    //   Arduino 版：不支持自动分配，必须显式指定 pos/length（否则返回 ERR_CONFIG_AUTO_UNSUPPORTED）
+    //   Arduino 版：不支持自动分配，必须显式指定 pos（否则返回 ERR_CONFIG_AUTO_UNSUPPORTED）
     // pos 显式指定时取值范围为 0~1999，实际存储位置会自动加 1000
+    // 显式 pos 时：length=0 使用长度前缀变长格式；length>0 使用定长格式，内容超长时按 length 截断
     // hide 为 true 时，用户在读取全部配置（fetch）时看不到该配置
     // Add a device configuration item
     // pos: TB_CONFIG_AUTO (default) = SDK-managed storage; or 0~1999 (stored at pos + 1000)
+    // Explicit pos: length=0 selects length-prefixed variable format; length>0 selects fixed-length format
     // If hide is true, the item is omitted when fetching all configs
     uint16_t addConfig(const char* name, uint16_t pos = TB_CONFIG_AUTO, uint8_t length = 0, const char* group = "", bool hide = false);
 

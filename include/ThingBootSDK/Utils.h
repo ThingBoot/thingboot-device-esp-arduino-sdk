@@ -45,6 +45,13 @@ inline long CL(JSONVar var)
     return strtol(C(var), NULL, 10);
 }
 
+// 将 JSONVar 转换为 unsigned long（用于 bench 等 uint32_t ID，避免有符号溢出）
+// Convert JSONVar to unsigned long
+inline unsigned long CUL(JSONVar var)
+{
+    return strtoul(C(var), NULL, 10);
+}
+
 // 版型标记宏（云端固件识别）
 // 用法：device.setProduct(key, secret, TB_BOARD("esp32dev"), mcu, firmware);
 // 将 "$BOARD$"<name> 以静态常量嵌入固件，云端上传固件时据此识别版型；

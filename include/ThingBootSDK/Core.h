@@ -12,11 +12,11 @@ uint32_t getDeviceID();
 
 // 获取工作台 ID
 // Get bench ID
-uint16_t getBenchID();
+uint32_t getBenchID();
 
 // 设置工作台 ID
 // Set bench ID
-uint16_t setBenchID(uint16_t benchID);
+uint32_t setBenchID(uint32_t benchID);
 
 // 获取主设备 ID
 // Get master device ID

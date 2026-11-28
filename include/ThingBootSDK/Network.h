@@ -27,6 +27,10 @@ public:
     // Get current network information
     JSONVar getNetworkInfo();
 
+    // 设置首次联网延迟并持久化到 ROM（秒，0=不延迟，最大 3600，超出按 3600 处理）
+    // 每次启动最多等待一次，后续重连仍保持默认 10 秒间隔；等待期间不阻塞主循环
+    void setNetworkDelay(uint32_t seconds);
+
     // 网络变化回调（主循环上下文触发）
     // event：NETWORK_EVENT_OFFLINE 网络断开 / NETWORK_EVENT_ONLINE 网络就绪 /
     //        NETWORK_EVENT_TYPE_CHANGED 联网类型切换
@@ -34,6 +38,23 @@ public:
     // 未注册不触发
     // Network change callback (fired in the main loop context)
     void onNetworkChange(std::function<void(NETWORK_EVENT event, const char* type)> callback);
+
+    // Mesh 子设备上行消息回调（主循环上下文，与原始 WiFi Mesh 的 message_recv_callback 语义一致）
+    // 返回 true：SDK 继续 sys_publish 上行平台；返回 false：由产品自行处理（不再自动上行）
+    // from 为直接 BLE 对端（直连场景即原始子设备；多跳来源不承诺识别）
+    // 未注册回调时直接上行平台
+    void onMeshChildMessage(std::function<bool(const char*, SYS_TOPIC, const char*, const char*, uint32_t)> callback);
+
+    // Mesh 设备发现回调（主循环上下文）：发现新的候选 Mesh 设备时触发（已绑定/未绑定均可）
+    // id 来自 Mesh 广播设备 ID；address 为 BLE 地址字符串；rssi 为可选辅助信息
+    // SDK 不自动 addChild，是否上报 device_join、何时绑定由产品决定
+    void onMeshDeviceFound(std::function<void(uint32_t, const char*, int)> callback);
+
+    // 向子设备发送完整 Mesh 业务消息（gateway→child，SDK 负责帧校验/分包/ACK/重试与发送队列）
+    // 返回：ERR_OK 已入队（不代表子设备执行成功）；ERR_SYSTEM_VALUE_NULL 参数错误或数据过长；
+    //       ERR_NETWORK_DRIVER_MISSING BLE addon 未安装；ERR_MESH_NOT_READY Mesh 未启用或暂无可用邻居；
+    //       ERR_MESH_QUEUE_FULL 发送队列满
+    uint16_t sendMeshChild(uint32_t id, SYS_TOPIC topic, const char* mid, const char* data);
 
     // 连接 WiFi
     // Connect to WiFi

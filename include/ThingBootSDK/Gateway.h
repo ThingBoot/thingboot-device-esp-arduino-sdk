@@ -4,9 +4,10 @@
 class ThingBootDevice;
 
 // 网关 addon 安装函数（链接 addon_gateway 库后，在 device.setup() 前调用）
-// install 即角色：注册成功自动加载子设备表。返回 ERR_OK 成功；
+// install 即角色：按产品指定的最大子设备数分配表空间并加载设备表。
+// 返回 ERR_OK 成功；ERR_SYSTEM_VALUE_NULL 容量为 0；ERR_MODULE_SYSTEM 分配失败；
 // ERR_NETWORK_ABI_MISMATCH 表示 addon 与 base 版本不一致
-uint16_t tb_addon_gateway_install();
+uint16_t tb_addon_gateway_install(uint16_t maxChildren);
 
 // 子设备记录（开发者可见）
 // Child device record (developer-facing)
@@ -28,9 +29,10 @@ private:
 public:
     ThingBootGateway(ThingBootDevice* device = nullptr) : _device(device) {}
 
-    // addon 安装（自由函数 tb_addon_gateway_install() 的成员转发版，完全等价，
-    // 供编辑器提示发现；install 即角色，未链接 addon_gateway 库时不要调用）
-    uint16_t install() { return tb_addon_gateway_install(); }
+    // addon 安装（自由函数 tb_addon_gateway_install(maxChildren) 的成员转发版，完全等价，
+    // 供编辑器提示发现；install 即角色，未链接 addon_gateway 库时不要调用。
+    // maxChildren 为产品允许的最大子设备数，必须显式指定且大于 0）
+    uint16_t install(uint16_t maxChildren) { return tb_addon_gateway_install(maxChildren); }
 
     // 添加子设备（已存在则刷新活动时间）。active 传 0 表示当前时间
     // Add a child (refreshes active time if it already exists). active=0 means now
@@ -85,6 +87,23 @@ public:
     // Child config callback: when a platform config message carries a device key,
     // this callback hands it to the product's transport (id, mid, data)
     uint16_t onChildConfig(std::function<void(uint32_t, const char*, JSONVar)> callback);
+
+    // 候选设备入网上报（device_join 嵌套信封：data={gateway,name:"device_join",device:payload}，
+    // 与平台监听服务（pusher parent.php）转发格式一致；仅上报候选，不入子设备表
+    uint16_t reportDeviceJoin(JSONVar payload);
+
+    // 平台 device_add 命令回调：要求绑定子设备（id/key/product/addr），
+    // 产品在此执行传输层绑定与 addChild 入表；返回错误码（0=成功，SDK 按结果生成应答）
+    uint16_t onDeviceAdd(std::function<uint16_t(uint32_t, const char*, uint32_t, uint32_t)> callback);
+
+    // 平台 device_remove 命令回调：解绑子设备（id），返回错误码
+    uint16_t onDeviceRemove(std::function<uint16_t(uint32_t)> callback);
+
+    // 平台 device_clear 命令回调：清空全部绑定，返回错误码
+    uint16_t onDeviceClear(std::function<uint16_t()> callback);
+
+    // 平台 device_update 命令回调：更新子设备扩展信息（id, info），返回错误码
+    uint16_t onDeviceUpdate(std::function<uint16_t(uint32_t, JSONVar)> callback);
 };
 
 #endif

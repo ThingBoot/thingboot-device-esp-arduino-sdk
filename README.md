@@ -275,7 +275,7 @@ BLE 与 AP HTTP 配网共用同一套本地配置逻辑：
 
 ## 网关（addon）
 
-网关类产品（子设备表维护 + 平台消息转发，与传输层无关）：`build_flags` 加 `-DTBD_GATEWAY`，并在 `device.setup()` 前调用 `device.Gateway.install()`（自由函数 `tb_addon_gateway_install()` 的转发版；install 即角色），再用 `device.Gateway.onChildOrder()` 注册子设备命令回调。详见官方文档「网关」章节。
+网关类产品（子设备表维护 + 平台消息转发，与传输层无关）：`build_flags` 加 `-DTBD_GATEWAY`，并在 `device.setup()` 前调用 `device.Gateway.install(maxChildren)` 显式指定产品允许的最大子设备数（自由函数 `tb_addon_gateway_install(maxChildren)` 的转发版；install 即角色，表空间按该容量分配），再用 `device.Gateway.onChildOrder()` 注册子设备命令回调。详见官方文档「网关」章节。
 
 > **ESP8266 1MB Flash 机型注意**：网关 addon 依赖 LittleFS 存储子设备表，1MB 机型将无法支持 OTA，请勿用于需要 OTA 的产品。
 >
